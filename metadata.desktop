@@ -1,0 +1,17 @@
+[SddmGreeterTheme]
+Name=Aerial HD Video
+Description=Aerial HD Video Stream
+Author=Fabio Almeida
+Copyright=(c) 2016, Fabio Almeida
+License=CC-BY-SA
+Type=sddm-theme
+Version=0.1
+Website=https://github.com/sddm/sddm
+Screenshot=breeze.jpg
+MainScript=Main.qml
+ConfigFile=theme.conf
+TranslationsDirectory=translations
+Email=fabio_r11@hotmail.com
+Theme-Id=breeze-video
+Theme-API=2.0
+
