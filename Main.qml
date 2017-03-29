@@ -75,12 +75,12 @@ Rectangle {
 
         Rectangle {
             id: login_container
-            y: 912
+            y: 852
             width: 445
             height: 82
             color: "transparent"
             anchors.left: parent.left
-            anchors.leftMargin: 166
+            anchors.leftMargin: 184
 
             Rectangle {
                 id: username_row
@@ -220,10 +220,10 @@ Rectangle {
 
         Clock {
             id: clock
-            y: 751
+            y: 691
             color: "white"
             anchors.left: parent.left
-            anchors.leftMargin: 166
+            anchors.leftMargin: 184
             timeFont.family: textFont.name
             dateFont.family: textFont.name
         }
