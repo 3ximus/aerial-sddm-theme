@@ -27,6 +27,7 @@ displayFont="Montserrat"
 
 ![preview1](preview1.gif)
 ![preview2](preview2.gif)
+![preview3](preview3.gif)
 
 ### TODO
 
@@ -39,4 +40,3 @@ Feel free to contribute to these ;)
 ## License
 
 Theme is licensed under GPL.
-Main.qml file is MIT licensed.
