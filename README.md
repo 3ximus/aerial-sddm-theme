@@ -12,7 +12,7 @@ It is necessary to have the Phonon GStreamer backend for qt5 and the GStreamer f
 This theme streams the videos so internet connection is necessary
 If there is no active connection or the video can't be played the background will fallback to the image background.jpg
 
-### Changing settings in `theme.conf.user`:
+### Changing settings in `theme.conf.user`
 
 You can change the font and the background.
 The background can be either an image, a video or a playlist (.m3u) file, for example:
@@ -25,9 +25,10 @@ displayFont="Montserrat"
 
 ## Preview
 
-...
+![preview1](preview1.gif)
+![preview2](preview2.gif)
 
-## TODO
+### TODO
 
 - [ ] Randomize playlist each time inside QML
 - [ ] Pick Videos based on time of day
