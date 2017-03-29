@@ -1,356 +1,344 @@
-/***************************************************************************
-* Copyright (c) 2015 Víctor Granda García <victorgrandagarcia@gmail.com>
-* Copyright (c) 2015 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
-* Copyright (c) 2013 Abdurrahman AVCI <abdurrahmanavci@gmail.com>
-* Copyright (c) 2013 Fabio Almeida| <fabio_r11@hotmail.com>
-*
-* Permission is hereby granted, free of charge, to any person
-* obtaining a copy of this software and associated documentation
-* files (the "Software"), to deal in the Software without restriction,
-* including without limitation the rights to use, copy, modify, merge,
-* publish, distribute, sublicense, and/or sell copies of the Software,
-* and to permit persons to whom the Software is furnished to do so,
-* subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included
-* in all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-* OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
-* OR OTHER DEALINGS IN THE SOFTWARE.
-*
-***************************************************************************/
-
-import QtQuick 2.2
+import QtQuick 2.0
 import SddmComponents 2.0
 import QtMultimedia 5.8
 
-
 Rectangle {
-  id: container
-  width: 1024
-  height: 768
+    // Main Container
+    id: container
+    width: 1920
+    height: 1080
 
-  LayoutMirroring.enabled: Qt.locale().textDirection == Qt.RightToLeft
-  LayoutMirroring.childrenInherit: true
+    LayoutMirroring.enabled: Qt.locale().textDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
 
-  property int sessionIndex: session.index
+    property int sessionIndex: session.index
 
-  TextConstants {
-    id: textConstants
-  }
-
-  Connections {
-    target: sddm
-    onLoginSucceeded: {
+    // Inherited from SDDMComponents
+    TextConstants {
+        id: textConstants
     }
 
-    onLoginFailed: {
-      errorMessage.color = "#dc322f"
-      errorMessage.text = textConstants.loginFailed
-    }
-  }
-
-  FontLoader {
-    id: textFont; name: config.displayFont
-  }
-
-  Repeater {
-    model: screenModel
-    Background {
-      x: geometry.x; y: geometry.y; width: geometry.width; height:geometry.height
-      source: config.background
-      fillMode: Image.PreserveAspectCrop
-      onStatusChanged: {
-        if (status == Image.Error && source != config.defaultBackground) {
-          source = config.defaultBackground
+    // Set SDDM actions
+    Connections {
+        target: sddm
+        onLoginSucceeded: {
         }
-      }
-    }
-  }
 
-MediaPlayer {
-	id: mediaplayer
-	autoPlay: true
-	loops: MediaPlayer.Infinite
-	source: config.background
-	muted: true
-}
-
-VideoOutput {
-	fillMode: VideoOutput.PreserveAspectCrop
-	anchors.fill: parent
-	source: mediaplayer
-}
-
-  Rectangle {
-    anchors.fill: parent
-    color: "transparent"
-
-    Rectangle {
-      id: clockContainer
-      width: parent.width / 2
-      height: parent.height * 0.2
-      color: "transparent"
-      anchors.left: parent.left
-      anchors.verticalCenter: parent.verticalCenter
-      anchors.leftMargin: 40
-
-      Clock {
-        id: clock
-        color: "white"
-        timeFont.family: textFont.name
-        dateFont.family: textFont.name
-      }
+        onLoginFailed: {
+            error_message.color = "#dc322f"
+            error_message.text = textConstants.loginFailed
+        }
     }
 
-    Rectangle {
-      width: parent.width / 2
-      height: parent.height * 0.3
-      color: "transparent"
-	  anchors.leftMargin: 40
-      anchors.top: clockContainer.bottom
-      anchors.left: parent.left
-      clip: true
+    // Set Font
 
-      Item {
-        id: usersContainer
-        width: 3 * parent.width / 4;
-		height: parent.height
+    FontLoader {
+        id: textFont; name: config.displayFont
+    }
 
-        Column {
-          id: nameColumn
-          width: parent.width * 0.4
-          spacing: 10
-          anchors.margins: 10
-
-          Text {
-            id: lblName
-            width: parent.width
-            text: textConstants.userName
-            font.family: textFont.name
-            font.bold: true
-            font.pixelSize: 16
-            color: "white"
-          }
-
-          TextBox {
-            id: name
-            width: parent.width
-            text: userModel.lastUser
-            font: textFont.name
-            color: "#25000000"
-            borderColor: "transparent"
-            textColor: "white"
-
-            Keys.onPressed: {
-              if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                sddm.login(name.text, password.text, session.index)
-                event.accepted = true
-              }
+    // Set Background Image
+    Repeater {
+        model: screenModel
+        Background {
+            id: background
+            x: geometry.x; y: geometry.y; width: geometry.width; height:geometry.height
+            source: config.background
+            fillMode: Image.PreserveAspectCrop
+            onStatusChanged: {
+                if (status == Image.Error && source != config.defaultBackground) {
+                    source = config.defaultBackground
+                }
             }
-
-            KeyNavigation.backtab: layoutBox; KeyNavigation.tab: password
-          }
-          Text {
-            id: errorMessage
-            anchors.left: name.left
-            //text: textConstants.prompt
-            font.family: textFont.name
-            font.pixelSize: 12
-			color: "white"
-          }
         }
-
-        Column {
-          id: passColumn
-          width: parent.width * 0.4
-          spacing: 10
-          anchors.margins: 10
-          anchors.left: nameColumn.right
-
-          Text {
-            id: lblPassword
-            width: parent.width
-            text: textConstants.password
-            font.family: textFont.name
-            font.bold: true
-            font.pixelSize: 16
-            color: "white"
-          }
-
-          PasswordBox {
-            id: password
-            width: parent.width
-            font: textFont.name
-            color: "#25000000"
-            borderColor: "transparent"
-            textColor: "white"
-            tooltipBG: "#25000000"
-            tooltipFG: "#dc322f"
-            image: "warning_red.png"
-
-            Keys.onPressed: {
-              if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                sddm.login(name.text, password.text, session.index)
-                event.accepted = true
-              }
-            }
-
-            KeyNavigation.backtab: name; KeyNavigation.tab: loginButton
-          }
-
-          Button {
-            id: loginButton
-            text: textConstants.login
-            width: parent.width * 0.4
-            anchors.right: password.right
-            color: "#404753"
-            disabledColor: "#dc322f"
-            activeColor: "#268bd2"
-            pressedColor: "#2aa198"
-            textColor: "white"
-            font: textFont.name
-
-            onClicked: sddm.login(name.text, password.text, session.index)
-
-            KeyNavigation.backtab: password; KeyNavigation.tab: btnReboot
-          }
-        }
-      }
     }
-  }
-  Rectangle {
-    id: actionBar
-    anchors.top: parent.top;
-    anchors.horizontalCenter: parent.horizontalCenter
-    width: parent.width; height: 40
-    color: "transparent"
 
-    Row {
-      anchors.left: parent.left
-      anchors.margins: 5
-      height: parent.height
-      spacing: 10
+    // Set Background Video
+	MediaPlayer {
+		id: mediaplayer
+		autoPlay: true
+		loops: MediaPlayer.Infinite
+		source: config.background
+		muted: true
+	}
 
-      Text {
-        height: parent.height
-        anchors.verticalCenter: parent.verticalCenter
+	VideoOutput {
+		fillMode: VideoOutput.PreserveAspectCrop
+		anchors.fill: parent
+		source: mediaplayer
+	}
 
-        font.family: textFont.name
-        verticalAlignment: Text.AlignVCenter
+    // Clock and Login Area
+    Rectangle {
+        id: rectangle
+        anchors.fill: parent
         color: "transparent"
-      }
 
-      ComboBox {
-        id: session
-        width: 245
-        height: 20
-        anchors.verticalCenter: parent.verticalCenter
-        color: "#25000000"
-        textColor: "white"
-        borderColor: "transparent"
-        hoverColor: "#073642"
-        arrowColor: "#25000000"
+        Rectangle {
+            id: login_container
+            y: 566
+            width: parent.width * 0.3
+            height: parent.height * 0.2
+            color: "transparent"
+            anchors.left: parent.left
+            anchors.leftMargin: 174
 
-        model: sessionModel
-        index: sessionModel.lastIndex
+            Row {
+                id: username_row
+                anchors.right: parent.right
+                anchors.rightMargin: 100
+                anchors.left: parent.left
+                anchors.leftMargin: 100
+                transformOrigin: Item.Center
+                anchors.margins: 10
+                spacing: 10
 
-        KeyNavigation.backtab: btnShutdown; KeyNavigation.tab: layoutBox
-      }
+                Text {
+                    id: username_label
+                    width: 376
+                    text: textConstants.userName
+                    horizontalAlignment: Text.AlignHCenter
+                    font.family: textFont.name
+                    font.bold: true
+                    font.pixelSize: 16
+                    color: "white"
+                }
 
-      Text {
-        height: parent.height
-        anchors.verticalCenter: parent.verticalCenter
+                TextBox {
+                    id: username_input_box
+                    width: parent.width
+                    text: userModel.lastUser
+                    font: textFont.name
+                    color: "#25000000"
+                    borderColor: "transparent"
+                    textColor: "white"
 
-        font.family: textFont.name
-        font.pixelSize: 16
-        font.bold: true
-        verticalAlignment: Text.AlignVCenter
-        color: "white"
-      }
+                    Keys.onPressed: {
+                        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            sddm.login(username_input_box.text, password_input_box.text, session.index)
+                            event.accepted = true
+                        }
+                    }
 
-      ComboBox {
-        id: layoutBox
+                    KeyNavigation.backtab: layoutBox; KeyNavigation.tab: password_input_box
+                }
 
-        model: keyboard.layouts
-        index: keyboard.currentLayout
-        width: 50
-        height: 20
-        anchors.verticalCenter: parent.verticalCenter
-        color: "#25000000"
-        textColor: "white"
-        borderColor: "transparent"
-        hoverColor: "#073642"
-        arrowIcon: "arrow.svg"
-        arrowColor: "#25000000"
+                Text {
+                    id: error_message
+                    font.family: textFont.name
+                    font.pixelSize: 12
+                    color: "white"
+                    anchors.left: username_input_box.left
+                    anchors.leftMargin: 376
+                }
+            }
 
-        onValueChanged: keyboard.currentLayout = id
+            Row {
+                id: password_row
+                anchors.right: parent.right
+                anchors.rightMargin: 100
+                anchors.left: parent.left
+                anchors.leftMargin: 100
+                anchors.top: username_row.bottom
+                anchors.topMargin: 10
+                spacing: 10
 
-        Connections {
-          target: keyboard
+                Text {
+                    id: password_label
+                    width: parent.width
+                    text: textConstants.password
+                    horizontalAlignment: Text.AlignHCenter
+                    font.family: textFont.name
+                    font.bold: true
+                    font.pixelSize: 16
+                    color: "white"
+                }
 
-          onCurrentLayoutChanged: combo.index = keyboard.currentLayout
+                PasswordBox {
+                    id: password_input_box
+                    width: parent.width
+                    font: textFont.name
+                    color: "#25000000"
+                    borderColor: "transparent"
+                    textColor: "white"
+                    tooltipBG: "#25000000"
+                    tooltipFG: "#dc322f"
+                    image: "warning_red.png"
+
+                    Keys.onPressed: {
+                        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                            sddm.login(username_input_box.text, password_input_box.text, session.index)
+                            event.accepted = true
+                        }
+                    }
+
+                    KeyNavigation.backtab: username_input_box; KeyNavigation.tab: login_button
+                }
+            }
+
+            Button {
+                id: login_button
+                text: textConstants.login
+                anchors.top: password_input_box.bottom
+                anchors.topMargin: 5
+                anchors.right: parent.right
+                anchors.rightMargin: 0
+                anchors.left: parent.left
+                anchors.leftMargin: 0
+                color: "#404753"
+                disabledColor: "#dc322f"
+                activeColor: "#268bd2"
+                pressedColor: "#2aa198"
+                textColor: "white"
+                font: textFont.name
+
+                onClicked: sddm.login(username_input_box.text, password_input_box.text, session.index)
+
+                KeyNavigation.backtab: password_input_box; KeyNavigation.tab: reboot_button
+            }
+
         }
 
-        rowDelegate: Rectangle {
-          color: "transparent"
-
-          Text {
-            anchors.margins: 4
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-
-            verticalAlignment: Text.AlignVCenter
-
-            text: modelItem ? modelItem.modelData.shortName : "zz"
-            font.family: textFont.name
-            font.pixelSize: 14
+        Clock {
+            id: clock
+            y: 405
             color: "white"
-          }
+            anchors.left: parent.left
+            anchors.leftMargin: 268
+            timeFont.family: textFont.name
+            dateFont.family: textFont.name
         }
-        KeyNavigation.backtab: session; KeyNavigation.tab: name
-      }
     }
 
-    Row {
-      height: parent.height
-      anchors.right: parent.right
-      anchors.margins: 5
-      spacing: 10
+    // Top Bar
+    Rectangle {
+        id: actionBar
+        anchors.top: parent.top;
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: parent.width; height: 40
+        color: "transparent"
 
-      ImageButton {
-        id: btnReboot
-        height: parent.height
-        source: "reboot.svg"
+        Row {
+            id: row_left
+            anchors.left: parent.left
+            anchors.margins: 5
+            height: parent.height
+            spacing: 10
 
-        visible: sddm.canReboot
-        onClicked: sddm.reboot()
-        KeyNavigation.backtab: loginButton; KeyNavigation.tab: btnShutdown
-      }
+            Text {
+                height: parent.height
+                anchors.verticalCenter: parent.verticalCenter
 
-      ImageButton {
-        id: btnShutdown
-        height: parent.height
-        source: "shutdown.svg"
+                font.family: textFont.name
+                verticalAlignment: Text.AlignVCenter
+                color: "transparent"
+            }
 
-        visible: sddm.canPowerOff
+            ComboBox {
+                id: session
+                width: 145
+                height: 20
+                anchors.verticalCenter: parent.verticalCenter
+                color: "transparent"
+                textColor: "white"
+                borderColor: "transparent"
+                hoverColor: "#073642"
+                arrowColor: "#25000000"
 
-        onClicked: sddm.powerOff()
+                model: sessionModel
+                index: sessionModel.lastIndex
 
-        KeyNavigation.backtab: btnReboot; KeyNavigation.tab: session
-      }
+                KeyNavigation.backtab: shutdown_button; KeyNavigation.tab: layoutBox
+            }
+
+            Text {
+                height: parent.height
+                anchors.verticalCenter: parent.verticalCenter
+
+                font.family: textFont.name
+                font.pixelSize: 16
+                font.bold: true
+                verticalAlignment: Text.AlignVCenter
+                color: "white"
+            }
+
+            ComboBox {
+                id: language
+
+                model: keyboard.layouts
+                index: keyboard.currentLayout
+                width: 50
+                height: 20
+                anchors.verticalCenter: parent.verticalCenter
+                color: "transparent"
+                textColor: "white"
+                borderColor: "transparent"
+                hoverColor: "#073642"
+                arrowIcon: "arrow.svg"
+                arrowColor: "#25000000"
+
+                onValueChanged: keyboard.currentLayout = id
+
+                Connections {
+                    target: keyboard
+
+                    onCurrentLayoutChanged: combo.index = keyboard.currentLayout
+                }
+
+                rowDelegate: Rectangle {
+                    color: "transparent"
+
+                    Text {
+                        anchors.margins: 4
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+
+                        verticalAlignment: Text.AlignVCenter
+
+                        text: modelItem ? modelItem.modelData.shortName : "zz"
+                        font.family: textFont.name
+                        font.pixelSize: 14
+                        color: "white"
+                    }
+                }
+                KeyNavigation.backtab: session; KeyNavigation.tab: username_input_box
+            }
+        }
+
+        Row {
+            id: row_right
+            height: parent.height
+            anchors.right: parent.right
+            anchors.margins: 5
+            spacing: 10
+
+            ImageButton {
+                id: reboot_button
+                height: parent.height
+                source: "reboot.svg"
+
+                visible: sddm.canReboot
+                onClicked: sddm.reboot()
+                KeyNavigation.backtab: login_button; KeyNavigation.tab: shutdown_button
+            }
+
+            ImageButton {
+                id: shutdown_button
+                height: parent.height
+                source: "shutdown.svg"
+                visible: sddm.canPowerOff
+                onClicked: sddm.powerOff()
+                KeyNavigation.backtab: reboot_button; KeyNavigation.tab: session
+            }
+        }
     }
-  }
 
-  Component.onCompleted: {
-        if (name.text == "")
-            name.focus = true
+
+    // Set Focus
+    Component.onCompleted: {
+        if (username_input_box.text == "")
+            username_input_box.focus = true
         else
-            password.focus = true
+            password_input_box.focus = true
     }
 }
+
