@@ -296,6 +296,7 @@ Rectangle {
                         text: modelItem ? modelItem.modelData.shortName : "zz"
                         font.family: textFont.name
                         font.pixelSize: 14
+						color: "white"
                     }
                 }
                 KeyNavigation.backtab: session; KeyNavigation.tab: username_input_box
