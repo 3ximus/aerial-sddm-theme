@@ -53,19 +53,19 @@ Rectangle {
     }
 
     // Set Background Video
-	MediaPlayer {
-		id: mediaplayer
-		autoPlay: true
-		loops: MediaPlayer.Infinite
-		source: config.background
-		muted: true
-	}
+    MediaPlayer {
+        id: mediaplayer
+        autoPlay: true
+        loops: MediaPlayer.Infinite
+        source: config.background
+        muted: true
+    }
 
-	VideoOutput {
-		fillMode: VideoOutput.PreserveAspectCrop
-		anchors.fill: parent
-		source: mediaplayer
-	}
+    VideoOutput {
+        fillMode: VideoOutput.PreserveAspectCrop
+        anchors.fill: parent
+        source: mediaplayer
+    }
 
     // Clock and Login Area
     Rectangle {
@@ -75,38 +75,47 @@ Rectangle {
 
         Rectangle {
             id: login_container
-            y: 566
-            width: parent.width * 0.3
-            height: parent.height * 0.2
+            y: 912
+            width: 445
+            height: 82
             color: "transparent"
             anchors.left: parent.left
-            anchors.leftMargin: 174
+            anchors.leftMargin: 166
 
-            Row {
+            Rectangle {
                 id: username_row
-                anchors.right: parent.right
-                anchors.rightMargin: 100
+                y: 0
+                height: 30
+				color: "transparent"
                 anchors.left: parent.left
-                anchors.leftMargin: 100
+                anchors.leftMargin: 0
+                anchors.right: parent.right
+                anchors.rightMargin: 0
                 transformOrigin: Item.Center
                 anchors.margins: 10
-                spacing: 10
 
                 Text {
                     id: username_label
-                    width: 376
-                    text: textConstants.userName
-                    horizontalAlignment: Text.AlignHCenter
+                    width: 120
+                    height: 20
+                    horizontalAlignment: Text.AlignLeft
                     font.family: textFont.name
                     font.bold: true
                     font.pixelSize: 16
                     color: "white"
+                    text: "Username"
+                    anchors.verticalCenter: parent.verticalCenter
                 }
 
                 TextBox {
                     id: username_input_box
-                    width: parent.width
+                    height: 30
                     text: userModel.lastUser
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: username_label.right
+                    anchors.leftMargin: 0
+                    anchors.right: parent.right
+                    anchors.rightMargin: 0
                     font: textFont.name
                     color: "#25000000"
                     borderColor: "transparent"
@@ -119,34 +128,39 @@ Rectangle {
                         }
                     }
 
-                    KeyNavigation.backtab: layoutBox; KeyNavigation.tab: password_input_box
+                    KeyNavigation.backtab: password_input_box; KeyNavigation.tab: password_input_box
                 }
 
                 Text {
                     id: error_message
+                    height: 30
                     font.family: textFont.name
                     font.pixelSize: 12
                     color: "white"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: username_input_box.right
+                    anchors.rightMargin: 0
                     anchors.left: username_input_box.left
-                    anchors.leftMargin: 376
+                    anchors.leftMargin: 0
                 }
             }
 
-            Row {
+            Rectangle {
                 id: password_row
+                y: 42
+                height: 30
+				color: "transparent"
                 anchors.right: parent.right
-                anchors.rightMargin: 100
+                anchors.rightMargin: 0
                 anchors.left: parent.left
-                anchors.leftMargin: 100
-                anchors.top: username_row.bottom
-                anchors.topMargin: 10
-                spacing: 10
+                anchors.leftMargin: 0
 
                 Text {
                     id: password_label
-                    width: parent.width
+                    width: 120
                     text: textConstants.password
-                    horizontalAlignment: Text.AlignHCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    horizontalAlignment: Text.AlignLeft
                     font.family: textFont.name
                     font.bold: true
                     font.pixelSize: 16
@@ -155,9 +169,14 @@ Rectangle {
 
                 PasswordBox {
                     id: password_input_box
-                    width: parent.width
+                    height: 30
                     font: textFont.name
                     color: "#25000000"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.right: parent.right
+                    anchors.rightMargin: 30
+                    anchors.left: password_label.right
+                    anchors.leftMargin: 0
                     borderColor: "transparent"
                     textColor: "white"
                     tooltipBG: "#25000000"
@@ -173,37 +192,38 @@ Rectangle {
 
                     KeyNavigation.backtab: username_input_box; KeyNavigation.tab: login_button
                 }
-            }
 
-            Button {
-                id: login_button
-                text: textConstants.login
-                anchors.top: password_input_box.bottom
-                anchors.topMargin: 5
-                anchors.right: parent.right
-                anchors.rightMargin: 0
-                anchors.left: parent.left
-                anchors.leftMargin: 0
-                color: "#404753"
-                disabledColor: "#dc322f"
-                activeColor: "#268bd2"
-                pressedColor: "#2aa198"
-                textColor: "white"
-                font: textFont.name
+                Button {
+                    id: login_button
+                    height: 30
+                    color: "#393939"
+                    text: ">"
+                    anchors.verticalCenter: parent.verticalCenter
+                    border.color: "#00000000"
+                    anchors.right: parent.right
+                    anchors.rightMargin: 0
+                    anchors.left: password_input_box.right
+                    anchors.leftMargin: 0
+                    disabledColor: "#dc322f"
+                    activeColor: "#268bd2"
+                    pressedColor: "#2aa198"
+                    textColor: "white"
+                    font: textFont.name
 
-                onClicked: sddm.login(username_input_box.text, password_input_box.text, session.index)
+                    onClicked: sddm.login(username_input_box.text, password_input_box.text, session.index)
 
-                KeyNavigation.backtab: password_input_box; KeyNavigation.tab: reboot_button
+                    KeyNavigation.backtab: password_input_box; KeyNavigation.tab: reboot_button
+                }
             }
 
         }
 
         Clock {
             id: clock
-            y: 405
+            y: 751
             color: "white"
             anchors.left: parent.left
-            anchors.leftMargin: 268
+            anchors.leftMargin: 166
             timeFont.family: textFont.name
             dateFont.family: textFont.name
         }
@@ -224,41 +244,21 @@ Rectangle {
             height: parent.height
             spacing: 10
 
-            Text {
-                height: parent.height
-                anchors.verticalCenter: parent.verticalCenter
-
-                font.family: textFont.name
-                verticalAlignment: Text.AlignVCenter
-                color: "transparent"
-            }
-
             ComboBox {
                 id: session
                 width: 145
                 height: 20
                 anchors.verticalCenter: parent.verticalCenter
                 color: "transparent"
+                arrowColor: "transparent"
                 textColor: "white"
                 borderColor: "transparent"
-                hoverColor: "#073642"
-                arrowColor: "#25000000"
+                hoverColor: "#5692c4"
 
                 model: sessionModel
                 index: sessionModel.lastIndex
 
-                KeyNavigation.backtab: shutdown_button; KeyNavigation.tab: layoutBox
-            }
-
-            Text {
-                height: parent.height
-                anchors.verticalCenter: parent.verticalCenter
-
-                font.family: textFont.name
-                font.pixelSize: 16
-                font.bold: true
-                verticalAlignment: Text.AlignVCenter
-                color: "white"
+                KeyNavigation.backtab: shutdown_button; KeyNavigation.tab: password_input_box
             }
 
             ComboBox {
@@ -270,11 +270,10 @@ Rectangle {
                 height: 20
                 anchors.verticalCenter: parent.verticalCenter
                 color: "transparent"
+                arrowColor: "transparent"
                 textColor: "white"
                 borderColor: "transparent"
-                hoverColor: "#073642"
-                arrowIcon: "arrow.svg"
-                arrowColor: "#25000000"
+                hoverColor: "#5692c4"
 
                 onValueChanged: keyboard.currentLayout = id
 
@@ -297,7 +296,6 @@ Rectangle {
                         text: modelItem ? modelItem.modelData.shortName : "zz"
                         font.family: textFont.name
                         font.pixelSize: 14
-                        color: "white"
                     }
                 }
                 KeyNavigation.backtab: session; KeyNavigation.tab: username_input_box
