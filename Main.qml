@@ -56,9 +56,14 @@ Rectangle {
     MediaPlayer {
         id: mediaplayer
         autoPlay: true
-        loops: MediaPlayer.Infinite
-        source: config.background
         muted: true
+		playlist: Playlist {
+			id: playlist
+			playbackMode: Playlist.Random
+			onLoaded: {
+				mediaplayer.play()
+			}
+		}
     }
 
     VideoOutput {
@@ -66,6 +71,14 @@ Rectangle {
         anchors.fill: parent
         source: mediaplayer
     }
+
+	MouseArea {
+		anchors.fill: parent;
+		onPressed: {
+			playlist.shuffle();
+			playlist.next();
+		}
+	}
 
     // Clock and Login Area
     Rectangle {
@@ -331,13 +344,18 @@ Rectangle {
         }
     }
 
-
-    // Set Focus
     Component.onCompleted: {
+		// Set Focus
         if (username_input_box.text == "")
             username_input_box.focus = true
         else
             password_input_box.focus = true
+
+		// load and randomize playlist
+		playlist.load(Qt.resolvedUrl(config.background), 'm3u')
+		for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {
+			playlist.shuffle()
+		}
     }
 }
 
