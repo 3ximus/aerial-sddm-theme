@@ -352,7 +352,12 @@ Rectangle {
             password_input_box.focus = true
 
 		// load and randomize playlist
-		playlist.load(Qt.resolvedUrl(config.background), 'm3u')
+		var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
+		if ( time >= 5 || time <= 17 )
+			playlist.load(Qt.resolvedUrl(config.background_day), 'm3u')
+		else
+			playlist.load(Qt.resolvedUrl(config.background_night), 'm3u')
+
 		for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {
 			playlist.shuffle()
 		}

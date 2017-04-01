@@ -1,3 +1,4 @@
 [General]
-background=playlist.m3u
+background_day=playlist_day.m3u
+background_night=playlist_night.m3u
 type=image
