@@ -353,7 +353,7 @@ Rectangle {
 
 		// load and randomize playlist
 		var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
-		if ( time >= 5 || time <= 17 )
+		if ( time >= 5 && time <= 17 )
 			playlist.load(Qt.resolvedUrl(config.background_day), 'm3u')
 		else
 			playlist.load(Qt.resolvedUrl(config.background_night), 'm3u')
