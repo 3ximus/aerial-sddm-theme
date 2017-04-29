@@ -5,8 +5,8 @@ import QtMultimedia 5.8
 Rectangle {
     // Main Container
     id: container
-    width: 1920
-    height: 1080
+    //width: 1920
+    //height: 1080
 
     LayoutMirroring.enabled: Qt.locale().textDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -53,24 +53,24 @@ Rectangle {
     }
 
     // Set Background Video
-    MediaPlayer {
-        id: mediaplayer
-        autoPlay: true
-        muted: true
-		playlist: Playlist {
-			id: playlist
-			playbackMode: Playlist.Random
-			onLoaded: {
-				mediaplayer.play()
-			}
-		}
-    }
+    //MediaPlayer {
+    //    id: mediaplayer
+    //    autoPlay: true
+    //    muted: true
+	//	playlist: Playlist {
+	//		id: playlist
+	//		playbackMode: Playlist.Random
+	//		onLoaded: {
+	//			mediaplayer.play()
+	//		}
+	//	}
+    //}
 
-    VideoOutput {
-        fillMode: VideoOutput.PreserveAspectCrop
-        anchors.fill: parent
-        source: mediaplayer
-    }
+    //VideoOutput {
+    //    fillMode: VideoOutput.PreserveAspectCrop
+    //    anchors.fill: parent
+    //    source: mediaplayer
+    //}
 
 	MouseArea {
 		anchors.fill: parent;
@@ -88,17 +88,17 @@ Rectangle {
 
         Rectangle {
             id: login_container
-            y: 852
-            width: 445
-            height: 82
+
+			y: parent.height * 0.8 //852
+            width: parent.width * 0.23 //445
+            height: parent.height * 0.08 //82
             color: "transparent"
             anchors.left: parent.left
             anchors.leftMargin: 184
 
             Rectangle {
                 id: username_row
-                y: 0
-                height: 30
+                height: parent.height * 0.36 //30
 				color: "transparent"
                 anchors.left: parent.left
                 anchors.leftMargin: 0
