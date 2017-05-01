@@ -1,4 +1,4 @@
-# Aerial theme for sddm
+# Aerial theme for SDDM
 
 SDDM theme with Apple TV Aerial videos
 
@@ -14,7 +14,7 @@ Havent tryed for other distros...
 
 ### Other notes
 
-This theme streams the videos so internet connection is necessary.
+This theme streams the HD videos so a good internet connection is necessary.
 If there is no active connection or the video can't be played the background will fallback to the image background.jpg
 
 ### Changing settings in `theme.conf.user`

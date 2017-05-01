@@ -53,32 +53,32 @@ Rectangle {
     }
 
     // Set Background Video
-    //MediaPlayer {
-    //    id: mediaplayer
-    //    autoPlay: true
-    //    muted: true
-	//	playlist: Playlist {
-	//		id: playlist
-	//		playbackMode: Playlist.Random
-	//		onLoaded: {
-	//			mediaplayer.play()
-	//		}
-	//	}
-    //}
+    MediaPlayer {
+        id: mediaplayer
+        autoPlay: true
+        muted: true
+        playlist: Playlist {
+            id: playlist
+            playbackMode: Playlist.Random
+            onLoaded: {
+                mediaplayer.play()
+            }
+        }
+    }
 
-    //VideoOutput {
-    //    fillMode: VideoOutput.PreserveAspectCrop
-    //    anchors.fill: parent
-    //    source: mediaplayer
-    //}
+    VideoOutput {
+        fillMode: VideoOutput.PreserveAspectCrop
+        anchors.fill: parent
+        source: mediaplayer
+    }
 
-	MouseArea {
-		anchors.fill: parent;
-		onPressed: {
-			playlist.shuffle();
-			playlist.next();
-		}
-	}
+    MouseArea {
+        anchors.fill: parent;
+        onPressed: {
+            playlist.shuffle();
+            playlist.next();
+        }
+    }
 
     // Clock and Login Area
     Rectangle {
@@ -86,20 +86,31 @@ Rectangle {
         anchors.fill: parent
         color: "transparent"
 
+        Clock {
+            id: clock
+            y: parent.height * 0.60
+            color: "white"
+            anchors.left: parent.left
+            anchors.leftMargin: parent.width * 0.1
+            timeFont.family: textFont.name
+            dateFont.family: textFont.name
+        }
+
         Rectangle {
             id: login_container
 
-			y: parent.height * 0.8 //852
-            width: parent.width * 0.23 //445
-            height: parent.height * 0.08 //82
+            //y: parent.height * 0.8
+            y: clock.y + clock.height + 30
+            width: clock.width
+            height: parent.height * 0.08
             color: "transparent"
             anchors.left: parent.left
-            anchors.leftMargin: 184
+            anchors.leftMargin: parent.width * 0.1
 
             Rectangle {
                 id: username_row
-                height: parent.height * 0.36 //30
-				color: "transparent"
+                height: parent.height * 0.36
+                color: "transparent"
                 anchors.left: parent.left
                 anchors.leftMargin: 0
                 anchors.right: parent.right
@@ -109,8 +120,8 @@ Rectangle {
 
                 Text {
                     id: username_label
-                    width: 120
-                    height: 20
+                    width: parent.width * 0.27
+                    height: parent.height * 0.66
                     horizontalAlignment: Text.AlignLeft
                     font.family: textFont.name
                     font.bold: true
@@ -122,7 +133,7 @@ Rectangle {
 
                 TextBox {
                     id: username_input_box
-                    height: 30
+                    height: parent.height
                     text: userModel.lastUser
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: username_label.right
@@ -146,13 +157,10 @@ Rectangle {
 
                 Text {
                     id: error_message
-                    height: 30
+                    height: parent.height
                     font.family: textFont.name
                     font.pixelSize: 12
                     color: "white"
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.right: username_input_box.right
-                    anchors.rightMargin: 0
                     anchors.left: username_input_box.left
                     anchors.leftMargin: 0
                 }
@@ -160,9 +168,9 @@ Rectangle {
 
             Rectangle {
                 id: password_row
-                y: 42
-                height: 30
-				color: "transparent"
+                y: username_row.height + 10
+                height: parent.height * 0.36
+                color: "transparent"
                 anchors.right: parent.right
                 anchors.rightMargin: 0
                 anchors.left: parent.left
@@ -170,7 +178,7 @@ Rectangle {
 
                 Text {
                     id: password_label
-                    width: 120
+                    width: parent.width * 0.27
                     text: textConstants.password
                     anchors.verticalCenter: parent.verticalCenter
                     horizontalAlignment: Text.AlignLeft
@@ -182,12 +190,12 @@ Rectangle {
 
                 PasswordBox {
                     id: password_input_box
-                    height: 30
+                    height: parent.height
                     font: textFont.name
                     color: "#25000000"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
-                    anchors.rightMargin: 30
+                    anchors.rightMargin: parent.height // this sets button width, this way its a square
                     anchors.left: password_label.right
                     anchors.leftMargin: 0
                     borderColor: "transparent"
@@ -208,7 +216,7 @@ Rectangle {
 
                 Button {
                     id: login_button
-                    height: 30
+                    height: parent.height
                     color: "#393939"
                     text: ">"
                     anchors.verticalCenter: parent.verticalCenter
@@ -231,23 +239,15 @@ Rectangle {
 
         }
 
-        Clock {
-            id: clock
-            y: 691
-            color: "white"
-            anchors.left: parent.left
-            anchors.leftMargin: 184
-            timeFont.family: textFont.name
-            dateFont.family: textFont.name
-        }
     }
 
     // Top Bar
     Rectangle {
         id: actionBar
+        width: parent.width
+        height: parent.height * 0.04
         anchors.top: parent.top;
         anchors.horizontalCenter: parent.horizontalCenter
-        width: parent.width; height: 40
         color: "transparent"
 
         Row {
@@ -309,7 +309,7 @@ Rectangle {
                         text: modelItem ? modelItem.modelData.shortName : "zz"
                         font.family: textFont.name
                         font.pixelSize: 14
-						color: "white"
+                        color: "white"
                     }
                 }
                 KeyNavigation.backtab: session; KeyNavigation.tab: username_input_box
@@ -345,22 +345,22 @@ Rectangle {
     }
 
     Component.onCompleted: {
-		// Set Focus
+        // Set Focus
         if (username_input_box.text == "")
             username_input_box.focus = true
         else
             password_input_box.focus = true
 
-		// load and randomize playlist
-		var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
-		if ( time >= 5 && time <= 17 )
-			playlist.load(Qt.resolvedUrl(config.background_day), 'm3u')
-		else
-			playlist.load(Qt.resolvedUrl(config.background_night), 'm3u')
+        // load and randomize playlist
+        var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
+        if ( time >= 5 && time <= 17 )
+            playlist.load(Qt.resolvedUrl(config.background_day), 'm3u')
+        else
+            playlist.load(Qt.resolvedUrl(config.background_night), 'm3u')
 
-		for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {
-			playlist.shuffle()
-		}
+        for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {
+            playlist.shuffle()
+        }
     }
 }
 
