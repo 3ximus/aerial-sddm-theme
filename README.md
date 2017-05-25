@@ -12,6 +12,17 @@ It is necessary to have the Phonon GStreamer backend for qt5 and the GStreamer f
 
 Havent tryed for other distros...
 
+### Installation
+
+Simply clone the repository and copy it to `/usr/share/sddm/themes/` like this:
+```
+git clone git@github.com:3ximus/aerial-sddm-theme.git
+mv aerial-sddm-theme /usr/share/sddm/themes
+```
+*Note that super user priviledges are needed to move files into that directory.*
+
+The theme can be tested by running `sddm-greeter --theme <path-to-this-repository>`
+
 ### Other notes
 
 This theme streams the HD videos so a good internet connection is necessary.
