@@ -86,10 +86,9 @@ Rectangle {
 
         Clock {
             id: clock
-            y: parent.height * 0.60
+            y: parent.height * config.relativePositionY - clock.height / 2
+			x: parent.width * config.relativePositionX - clock.width / 2
             color: "white"
-            anchors.left: parent.left
-            anchors.leftMargin: parent.width * 0.1
             timeFont.family: textFont.name
             dateFont.family: textFont.name
         }
@@ -102,8 +101,7 @@ Rectangle {
             width: clock.width
             height: parent.height * 0.08
             color: "transparent"
-            anchors.left: parent.left
-            anchors.leftMargin: parent.width * 0.1
+            anchors.left: clock.left
 
             Rectangle {
                 id: username_row

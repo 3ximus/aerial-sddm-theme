@@ -1,7 +1,0 @@
-[General]
-background_day=playlist_day.m3u
-background_night=playlist_night.m3u
-displayFont="Misc Fixed"
-showLoginButton=false
-passwordLeftMargin=15
-usernameLeftMargin=15

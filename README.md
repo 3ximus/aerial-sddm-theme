@@ -36,9 +36,9 @@ You can change a few settings in this file
 - `displayFont` - font
 - `showLoginButton` - if set to false will hide the login button
 - `passwordLeftMargin` and `usernameLeftMargin` - set margin between input boxes and labels, some fonts are messy and allows fixing of overlap
+- `relativePositionX` and `relativePositionY` - position the login text box and clock
 
-Example my config (not the same as the screenshots):
-
+Example config (not the same as the screenshots):
 
 ```
 [General]
