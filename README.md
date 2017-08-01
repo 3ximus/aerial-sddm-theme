@@ -30,18 +30,24 @@ If there is no active connection or the video can't be played the background wil
 
 ### Changing settings in `theme.conf.user`
 
-You can change the font and the background.
-To set background image use `background`, for video playlists use `background_day` and `background_night`. Other keywords can be used, you just need to change the loaded config name near the end of the Main.qml file.
+You can change a few settings in this file
+- `background` - default background image
+- `background_day` and `background_night` - video playlists
+- `displayFont` - font
+- `showLoginButton` - if set to false will hide the login button
+- `passwordLeftMargin` and `usernameLeftMargin` - set margin between input boxes and labels, some fonts are messy and allows fixing of overlap
 
-Example:
+Example my config (not the same as the screenshots):
 
 
 ```
 [General]
-background="image.jpg"
-background_day="playlist_day.m3u"
-background_night="playlist_night.m3u"
-displayFont="Montserrat"
+background_day=playlist_day.m3u
+background_night=playlist_night.m3u
+displayFont="Misc Fixed"
+showLoginButton=false
+passwordLeftMargin=15
+usernameLeftMargin=15
 ```
 
 ## Preview

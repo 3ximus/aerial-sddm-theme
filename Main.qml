@@ -41,14 +41,12 @@ Rectangle {
         model: screenModel
         Background {
             id: background
-            x: geometry.x; y: geometry.y; width: geometry.width; height:geometry.height
+            x: geometry.x
+            y: geometry.y
+            width: geometry.width
+            height: geometry.height
             source: config.background
             fillMode: Image.PreserveAspectCrop
-            onStatusChanged: {
-                if (status == Image.Error && source != config.defaultBackground) {
-                    source = config.defaultBackground
-                }
-            }
         }
     }
 
@@ -137,7 +135,7 @@ Rectangle {
                     text: userModel.lastUser
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.left: username_label.right
-                    anchors.leftMargin: 0
+                    anchors.leftMargin: config.usernameLeftMargin
                     anchors.right: parent.right
                     anchors.rightMargin: 0
                     font: textFont.name
@@ -197,7 +195,7 @@ Rectangle {
                     anchors.right: parent.right
                     anchors.rightMargin: parent.height // this sets button width, this way its a square
                     anchors.left: password_label.right
-                    anchors.leftMargin: 0
+                    anchors.leftMargin: config.passwordLeftMargin
                     borderColor: "transparent"
                     textColor: "white"
                     tooltipBG: "#25000000"
@@ -360,6 +358,11 @@ Rectangle {
 
         for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {
             playlist.shuffle()
+        }
+
+        if (config.showLoginButton == "false") {
+            login_button.visible = false
+            password_input_box.anchors.rightMargin = 0
         }
     }
 }
