@@ -150,16 +150,6 @@ Rectangle {
 
                     KeyNavigation.backtab: password_input_box; KeyNavigation.tab: password_input_box
                 }
-
-                Text {
-                    id: error_message
-                    height: parent.height
-                    font.family: textFont.name
-                    font.pixelSize: 12
-                    color: "white"
-                    anchors.left: username_input_box.left
-                    anchors.leftMargin: 0
-                }
             }
 
             Rectangle {
@@ -191,7 +181,7 @@ Rectangle {
                     color: "#25000000"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
-                    anchors.rightMargin: parent.height // this sets button width, this way its a square
+                    anchors.rightMargin: 2*parent.height // this sets button width, this way its a square
                     anchors.left: password_label.right
                     anchors.leftMargin: config.passwordLeftMargin
                     borderColor: "transparent"
@@ -211,16 +201,39 @@ Rectangle {
                 }
 
                 Button {
+                    id: clear_passwd_button
+                    height: parent.height
+                    //color: "#393939"
+                    color: "#25000000"
+                    text: "x"
+                    font: textFont.name
+
+                    border.color: "#00000000"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: password_input_box.right
+                    anchors.right: parent.right
+                    anchors.leftMargin: 0
+                    anchors.rightMargin: parent.height
+
+                    disabledColor: "#dc322f"
+                    activeColor: "#268bd2"
+                    pressedColor: "#2aa198"
+
+                    onClicked: password_input_box.text=''
+                }
+
+                Button {
                     id: login_button
                     height: parent.height
                     color: "#393939"
                     text: ">"
-                    anchors.verticalCenter: parent.verticalCenter
                     border.color: "#00000000"
+                    anchors.verticalCenter: parent.verticalCenter
+                    //anchors.left: password_input_box.right
+                    anchors.left: clear_passwd_button.right
                     anchors.right: parent.right
-                    anchors.rightMargin: 0
-                    anchors.left: password_input_box.right
-                    anchors.leftMargin: 0
+                    //anchors.leftMargin: 0
+                    //anchors.rightMargin: 0
                     disabledColor: "#dc322f"
                     activeColor: "#268bd2"
                     pressedColor: "#2aa198"
@@ -231,10 +244,20 @@ Rectangle {
 
                     KeyNavigation.backtab: password_input_box; KeyNavigation.tab: reboot_button
                 }
+
+                Text {
+                    id: error_message
+                    height: parent.height
+                    font.family: textFont.name
+                    font.pixelSize: 12
+                    color: "white"
+                    anchors.top: password_input_box.bottom
+                    anchors.left: password_input_box.left
+                    anchors.leftMargin: 0
+                }
             }
 
         }
-
     }
 
     // Top Bar
@@ -260,7 +283,8 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 color: "transparent"
                 arrowColor: "transparent"
-                textColor: "white"
+                //textColor: "white"
+                textColor: "#505050"
                 borderColor: "transparent"
                 hoverColor: "#5692c4"
 
@@ -305,7 +329,8 @@ Rectangle {
                         text: modelItem ? modelItem.modelData.shortName : "zz"
                         font.family: textFont.name
                         font.pixelSize: 14
-                        color: "white"
+                        //color: "white"
+                        color: "#505050"
                     }
                 }
                 KeyNavigation.backtab: session; KeyNavigation.tab: username_input_box

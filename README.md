@@ -25,6 +25,7 @@ The theme can be tested by running `sddm-greeter --theme <path-to-this-repositor
 
 ### Other notes
 
+ - video
 This theme streams the HD videos so a good internet connection is necessary.
 If there is no active connection or the video can't be played the background will fallback to the image background.jpg
 
@@ -48,6 +49,13 @@ displayFont="Misc Fixed"
 showLoginButton=false
 passwordLeftMargin=15
 usernameLeftMargin=15
+```
+
+If you want to use the local videos but not via internet, you can put your day-videos and night-videos to `playlist_videos/day` and `playlist_videos/night` directory and then run the code below:
+
+
+```bash
+./generate_playlist.sh local
 ```
 
 ## Preview
