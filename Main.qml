@@ -181,7 +181,7 @@ Rectangle {
                     color: "#25000000"
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
-                    anchors.rightMargin: 2*parent.height // this sets button width, this way its a square
+                    anchors.rightMargin: parent.height // this sets button width, this way its a square
                     anchors.left: password_label.right
                     anchors.leftMargin: config.passwordLeftMargin
                     borderColor: "transparent"
@@ -189,6 +189,14 @@ Rectangle {
                     tooltipBG: "#25000000"
                     tooltipFG: "#dc322f"
                     image: "warning_red.png"
+					onTextChanged: {
+						if (password_input_box.text == "") {
+							clear_passwd_button.visible = false
+						}
+						if (password_input_box.text != "" && config.showClearPasswordButton != "false") {
+							clear_passwd_button.visible = true
+						}
+					}
 
                     Keys.onPressed: {
                         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
@@ -203,23 +211,26 @@ Rectangle {
                 Button {
                     id: clear_passwd_button
                     height: parent.height
-                    //color: "#393939"
-                    color: "#25000000"
+					width: parent.height
+                    color: "transparent"
                     text: "x"
                     font: textFont.name
 
-                    border.color: "#00000000"
+                    border.color: "transparent"
+					border.width: 0
                     anchors.verticalCenter: parent.verticalCenter
-                    anchors.left: password_input_box.right
                     anchors.right: parent.right
                     anchors.leftMargin: 0
                     anchors.rightMargin: parent.height
 
                     disabledColor: "#dc322f"
-                    activeColor: "#268bd2"
+                    activeColor: "#393939"
                     pressedColor: "#2aa198"
 
-                    onClicked: password_input_box.text=''
+                    onClicked: {
+						password_input_box.text=''
+            			password_input_box.focus = true
+					}
                 }
 
                 Button {
@@ -229,11 +240,8 @@ Rectangle {
                     text: ">"
                     border.color: "#00000000"
                     anchors.verticalCenter: parent.verticalCenter
-                    //anchors.left: password_input_box.right
-                    anchors.left: clear_passwd_button.right
+                    anchors.left: password_input_box.right
                     anchors.right: parent.right
-                    //anchors.leftMargin: 0
-                    //anchors.rightMargin: 0
                     disabledColor: "#dc322f"
                     activeColor: "#268bd2"
                     pressedColor: "#2aa198"
@@ -283,7 +291,6 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 color: "transparent"
                 arrowColor: "transparent"
-                //textColor: "white"
                 textColor: "#505050"
                 borderColor: "transparent"
                 hoverColor: "#5692c4"
@@ -386,7 +393,9 @@ Rectangle {
         if (config.showLoginButton == "false") {
             login_button.visible = false
             password_input_box.anchors.rightMargin = 0
+			clear_passwd_button.anchors.rightMargin = 0
         }
+		clear_passwd_button.visible = false
     }
 }
 
