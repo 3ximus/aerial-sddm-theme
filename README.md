@@ -28,6 +28,10 @@ The theme can be tested by running `sddm-greeter --theme <path-to-this-repositor
 This theme streams the HD videos so a good internet connection is necessary.
 If there is no active connection or the video can't be played the background will fallback to the image background.jpg
 
+If you wish to play local videos files just use the following command to generate the playlist-file (playlist_day.m3u or playlist_night.m3u) from a directory containing the videos:
+
+`find <path-to-your-directory> -maxdepth 1 -type f > <playlist-file>`
+
 ### Changing settings in `theme.conf.user`
 
 You can change a few settings in this file
@@ -35,6 +39,7 @@ You can change a few settings in this file
 - `background_day` and `background_night` - video playlists
 - `displayFont` - font
 - `showLoginButton` - if set to false will hide the login button
+- `showClearPasswordButton` - if set to false will hide the clear password button that appears when text is inputed
 - `passwordLeftMargin` and `usernameLeftMargin` - set margin between input boxes and labels, some fonts are messy and allows fixing of overlap
 - `relativePositionX` and `relativePositionY` - position the login text box and clock
 

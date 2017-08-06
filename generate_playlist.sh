@@ -1,3 +1,5 @@
+#!/bin/bash
+
 curl 'http://a1.phobos.apple.com/us/r1000/000/Features/atv/AutumnResources/videos/entries.json' 2>/dev/null | python2 -c '
 import sys, json;
 day=open("playlist_day.m3u", "w")
