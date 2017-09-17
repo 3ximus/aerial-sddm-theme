@@ -5,8 +5,6 @@ import QtMultimedia 5.8
 Rectangle {
     // Main Container
     id: container
-    //width: 1920
-    //height: 1080
 
     LayoutMirroring.enabled: Qt.locale().textDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -31,52 +29,115 @@ Rectangle {
     }
 
     // Set Font
-
     FontLoader {
         id: textFont; name: config.displayFont
     }
 
-    // Set Background Image
-    Repeater {
-        model: screenModel
-        Background {
-            id: background
-            x: geometry.x
-            y: geometry.y
-            width: geometry.width
-            height: geometry.height
-            source: config.background
-            fillMode: Image.PreserveAspectCrop
-        }
+    // Background Fill
+    Rectangle {
+        anchors.fill: parent
+        color: "black"
     }
 
-    // Set Background Video
+    // Set Background Image
+    Image {
+        anchors.fill: parent
+        source: config.background
+        fillMode: Image.PreserveAspectCrop
+    }
+
+    // Set Background Video1
     MediaPlayer {
-        id: mediaplayer
-        autoPlay: true
-        muted: true
+        id: mediaplayer1
+        autoPlay: true; muted: true
         playlist: Playlist {
-            id: playlist
+            id: playlist1
             playbackMode: Playlist.Random
-            onLoaded: {
-                mediaplayer.play()
-            }
+            onLoaded: { mediaplayer1.play() }
         }
     }
 
     VideoOutput {
+        id: video1
         fillMode: VideoOutput.PreserveAspectCrop
-        anchors.fill: parent
-        source: mediaplayer
-    }
-
-    MouseArea {
-        anchors.fill: parent;
-        onPressed: {
-            playlist.shuffle();
-            playlist.next();
+        anchors.fill: parent; source: mediaplayer1
+        MouseArea {
+            id: mouseArea1
+            anchors.fill: parent;
+            onPressed: {playlist1.shuffle(); playlist1.next();}
         }
     }
+
+    // Set Background Video2
+    MediaPlayer {
+        id: mediaplayer2
+        autoPlay: true; muted: true
+        playlist: Playlist {
+            id: playlist2; playbackMode: Playlist.Random
+            //onLoaded: { mediaplayer2.play() }
+        }
+    }
+
+    VideoOutput {
+        id: video2
+        fillMode: VideoOutput.PreserveAspectCrop
+        anchors.fill: parent; source: mediaplayer2
+        opacity: 0
+        MouseArea {
+            id: mouseArea2
+            enabled: false
+            anchors.fill: parent;
+			onPressed: {playlist2.shuffle(); playlist2.next();}
+        }
+        Behavior on opacity {
+            enabled: true
+            NumberAnimation { easing.type: Easing.InOutQuad; duration: 3000 }
+        }
+    }
+
+    property MediaPlayer currentPlayer: mediaplayer1
+
+    // Timer event to handle fade between videos
+    Timer {
+        interval: 1000;
+        running: true; repeat: true
+        onTriggered: {
+            if (currentPlayer.duration != -1 && currentPlayer.position > currentPlayer.duration - 10000) { // pre load the 2nd player
+                if (video2.opacity == 0) { // toogle opacity
+                    mediaplayer2.play()
+                } else
+                    mediaplayer1.play()
+            }
+            if (currentPlayer.duration != -1 && currentPlayer.position > currentPlayer.duration - 3000) { // initiate transition
+                if (video2.opacity == 0) { // toogle opacity
+                    mouseArea1.enabled = false
+                    currentPlayer = mediaplayer2
+                    video2.opacity = 1
+                    triggerTimer.start()
+                    mouseArea2.enabled = true
+                } else {
+                    mouseArea2.enabled = false
+                    currentPlayer = mediaplayer1
+                    video2.opacity = 0
+                    triggerTimer.start()
+                    mouseArea1.enabled = true
+                }
+            }
+        }
+    }
+
+    Timer { // this timer waits for fade to stop and stops the video
+        id: triggerTimer
+        interval: 4000; running: false; repeat: false
+        onTriggered: {
+            if (video2.opacity == 1)
+                mediaplayer1.stop()
+            else
+                mediaplayer2.stop()
+        }
+    }
+
+
 
     // Clock and Login Area
     Rectangle {
@@ -87,7 +148,7 @@ Rectangle {
         Clock {
             id: clock
             y: parent.height * config.relativePositionY - clock.height / 2
-			x: parent.width * config.relativePositionX - clock.width / 2
+            x: parent.width * config.relativePositionX - clock.width / 2
             color: "white"
             timeFont.family: textFont.name
             dateFont.family: textFont.name
@@ -189,14 +250,14 @@ Rectangle {
                     tooltipBG: "#25000000"
                     tooltipFG: "#dc322f"
                     image: "warning_red.png"
-					onTextChanged: {
-						if (password_input_box.text == "") {
-							clear_passwd_button.visible = false
-						}
-						if (password_input_box.text != "" && config.showClearPasswordButton != "false") {
-							clear_passwd_button.visible = true
-						}
-					}
+                    onTextChanged: {
+                        if (password_input_box.text == "") {
+                            clear_passwd_button.visible = false
+                        }
+                        if (password_input_box.text != "" && config.showClearPasswordButton != "false") {
+                            clear_passwd_button.visible = true
+                        }
+                    }
 
                     Keys.onPressed: {
                         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
@@ -211,13 +272,13 @@ Rectangle {
                 Button {
                     id: clear_passwd_button
                     height: parent.height
-					width: parent.height
+                    width: parent.height
                     color: "transparent"
                     text: "x"
                     font: textFont.name
 
                     border.color: "transparent"
-					border.width: 0
+                    border.width: 0
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.right: parent.right
                     anchors.leftMargin: 0
@@ -228,9 +289,9 @@ Rectangle {
                     pressedColor: "#2aa198"
 
                     onClicked: {
-						password_input_box.text=''
-            			password_input_box.focus = true
-					}
+                        password_input_box.text=''
+                        password_input_box.focus = true
+                    }
                 }
 
                 Button {
@@ -381,21 +442,25 @@ Rectangle {
 
         // load and randomize playlist
         var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
-        if ( time >= 5 && time <= 17 )
-            playlist.load(Qt.resolvedUrl(config.background_day), 'm3u')
-        else
-            playlist.load(Qt.resolvedUrl(config.background_night), 'm3u')
+        if ( time >= 5 && time <= 17 ) {
+            playlist1.load(Qt.resolvedUrl(config.background_day), 'm3u')
+            playlist2.load(Qt.resolvedUrl(config.background_day), 'm3u')
+        } else {
+            playlist1.load(Qt.resolvedUrl(config.background_night), 'm3u')
+            playlist2.load(Qt.resolvedUrl(config.background_night), 'm3u')
+        }
 
         for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {
-            playlist.shuffle()
+            playlist1.shuffle()
+            playlist2.shuffle()
         }
 
         if (config.showLoginButton == "false") {
             login_button.visible = false
             password_input_box.anchors.rightMargin = 0
-			clear_passwd_button.anchors.rightMargin = 0
+            clear_passwd_button.anchors.rightMargin = 0
         }
-		clear_passwd_button.visible = false
+        clear_passwd_button.visible = false
     }
 }
 

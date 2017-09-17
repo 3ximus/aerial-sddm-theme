@@ -7,8 +7,10 @@ night=open("playlist_night.m3u", "w")
 for x in json.load(sys.stdin):
 	for asset in x["assets"]:
 		if asset["timeOfDay"] == "night":
+			print "[+] night - " + asset["url"]
 			night.write(asset["url"]+"\n")
 		elif asset["timeOfDay"] == "day":
+			print "[+] day - " + asset["url"]
 			day.write(asset["url"]+"\n")
 		else:
 			print "Unknown time of day %s" % asset["timeOfDay"]
