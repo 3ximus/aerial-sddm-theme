@@ -57,9 +57,13 @@ usernameLeftMargin=15
 
 ## Preview
 
-![preview1](preview1.gif)
-![preview2](preview2.gif)
-![preview3](preview3.gif)
+![preview1](screens/preview1.gif)
+![preview2](screens/preview2.gif)
+![preview3](screens/preview3.gif)
+
+## Using my custom theme.conf.user
+
+![custom](screens/custom.gif)
 
 ## License
 
