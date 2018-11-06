@@ -2,6 +2,8 @@ import QtQuick 2.0
 import SddmComponents 2.0
 import QtMultimedia 5.8
 
+import "components"
+
 Rectangle {
     // Main Container
     id: container
@@ -64,7 +66,8 @@ Rectangle {
         MouseArea {
             id: mouseArea1
             anchors.fill: parent;
-            onPressed: {playlist1.shuffle(); playlist1.next();}
+            //onPressed: {playlist1.shuffle(); playlist1.next();}
+			onPressed: { fader.state = fader.state == "off" ? "on" : "off" ; }
         }
     }
 
@@ -136,6 +139,16 @@ Rectangle {
                 mediaplayer2.stop()
         }
     }
+	WallpaperFader {
+		id: fader
+		visible: true
+		anchors.fill: parent
+		state: "off"
+		source: video1
+		mainStack: login_container
+		footer: login_container
+		clock: clock
+	}
 
 
 
