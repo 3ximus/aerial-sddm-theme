@@ -21,7 +21,7 @@ mv aerial-sddm-theme /usr/share/sddm/themes
 ```
 *Note that super user priviledges are needed to move files into that directory.*
 
-The theme can be tested by running `sddm-greeter --theme <path-to-this-repository>`
+The theme can be tested by running `sddm-greeter --test-mode --theme <path-to-this-repository>`
 
 ### Other notes
 

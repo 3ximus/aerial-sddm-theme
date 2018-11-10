@@ -67,7 +67,14 @@ Rectangle {
             id: mouseArea1
             anchors.fill: parent;
             //onPressed: {playlist1.shuffle(); playlist1.next();}
-			onPressed: { fader.state = fader.state == "off" ? "on" : "off" ; }
+            onPressed: { fader.state = fader.state == "off" ? "on" : "off" ; }
+        }
+        Keys.onPressed: {
+            fader.state = "on";
+            if (username_input_box.text == "")
+                username_input_box.focus = true
+            else
+                password_input_box.focus = true
         }
     }
 
@@ -90,7 +97,7 @@ Rectangle {
             id: mouseArea2
             enabled: false
             anchors.fill: parent;
-			onPressed: {playlist2.shuffle(); playlist2.next();}
+            onPressed: {playlist2.shuffle(); playlist2.next();}
         }
         Behavior on opacity {
             enabled: true
@@ -139,16 +146,15 @@ Rectangle {
                 mediaplayer2.stop()
         }
     }
-	WallpaperFader {
-		id: fader
-		visible: true
-		anchors.fill: parent
-		state: "off"
-		source: video1
-		mainStack: login_container
-		footer: login_container
-		clock: clock
-	}
+    WallpaperFader {
+        id: fader
+        visible: true
+        anchors.fill: parent
+        state: "off"
+        source: video1
+        mainStack: login_container
+        footer: login_container
+    }
 
 
 
@@ -222,7 +228,8 @@ Rectangle {
                         }
                     }
 
-                    KeyNavigation.backtab: password_input_box; KeyNavigation.tab: password_input_box
+                    KeyNavigation.backtab: password_input_box
+                    KeyNavigation.tab: password_input_box
                 }
             }
 
@@ -279,7 +286,8 @@ Rectangle {
                         }
                     }
 
-                    KeyNavigation.backtab: username_input_box; KeyNavigation.tab: login_button
+                    KeyNavigation.backtab: username_input_box
+                    KeyNavigation.tab: login_button
                 }
 
                 Button {
@@ -324,7 +332,8 @@ Rectangle {
 
                     onClicked: sddm.login(username_input_box.text, password_input_box.text, session.index)
 
-                    KeyNavigation.backtab: password_input_box; KeyNavigation.tab: reboot_button
+                    KeyNavigation.backtab: password_input_box
+                    KeyNavigation.tab: reboot_button
                 }
 
                 Text {
@@ -372,7 +381,8 @@ Rectangle {
                 model: sessionModel
                 index: sessionModel.lastIndex
 
-                KeyNavigation.backtab: shutdown_button; KeyNavigation.tab: password_input_box
+                KeyNavigation.backtab: shutdown_button
+                KeyNavigation.tab: password_input_box
             }
 
             ComboBox {
@@ -414,7 +424,8 @@ Rectangle {
                         color: "#505050"
                     }
                 }
-                KeyNavigation.backtab: session; KeyNavigation.tab: username_input_box
+                KeyNavigation.backtab: session
+                KeyNavigation.tab: username_input_box
             }
         }
 
@@ -432,7 +443,8 @@ Rectangle {
 
                 visible: sddm.canReboot
                 onClicked: sddm.reboot()
-                KeyNavigation.backtab: login_button; KeyNavigation.tab: shutdown_button
+                KeyNavigation.backtab: login_button
+                KeyNavigation.tab: shutdown_button
             }
 
             ImageButton {
@@ -441,17 +453,20 @@ Rectangle {
                 source: "shutdown.svg"
                 visible: sddm.canPowerOff
                 onClicked: sddm.powerOff()
-                KeyNavigation.backtab: reboot_button; KeyNavigation.tab: session
+                KeyNavigation.backtab: reboot_button
+                KeyNavigation.tab: session
             }
         }
     }
 
     Component.onCompleted: {
         // Set Focus
-        if (username_input_box.text == "")
-            username_input_box.focus = true
-        else
-            password_input_box.focus = true
+        /* if (username_input_box.text == "") */
+        /*     username_input_box.focus = true */
+        /* else */
+        /*     password_input_box.focus = true */
+
+        video1.focus = true
 
         // load and randomize playlist
         var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))

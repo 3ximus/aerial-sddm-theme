@@ -29,7 +29,6 @@ import org.kde.plasma.private.sessions 2.0
 
 Item {
     id: wallpaperFader
-    property Item clock
     property Item mainStack
     property Item footer
     property alias source: wallpaperBlur.source
@@ -114,10 +113,6 @@ Item {
                 target: wallpaperFader
                 factor: 1
             }
-            PropertyChanges {
-                target: clock.shadow
-                opacity: 0
-            }
         },
         State {
             name: "off"
@@ -132,10 +127,6 @@ Item {
             PropertyChanges {
                 target: wallpaperFader
                 factor: 0
-            }
-            PropertyChanges {
-                target: clock.shadow
-                opacity: 1
             }
         }
     ]
