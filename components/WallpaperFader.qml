@@ -47,7 +47,7 @@ Item {
     FastBlur {
         id: wallpaperBlur
         anchors.fill: parent
-        radius: 40 * wallpaperFader.factor
+        radius: 50 * wallpaperFader.factor
     }
     ShaderEffect {
         id: wallpaperShader
@@ -64,20 +64,15 @@ Item {
         readonly property real saturation: 1.7 * wallpaperFader.factor + (1 - wallpaperFader.factor)
         readonly property real intensity: (wallpaperFader.lightBackground ? 1.7 : 0.45) * wallpaperFader.factor + (1 - wallpaperFader.factor)
 
-        readonly property real transl: (1.0 - contrast) / 2.0;
-        readonly property real rval: (1.0 - saturation) * 0.2126;
-        readonly property real gval: (1.0 - saturation) * 0.7152;
-        readonly property real bval: (1.0 - saturation) * 0.0722;
-
         property var colorMatrix: Qt.matrix4x4(
             contrast, 0,        0,        0.0,
             0,        contrast, 0,        0.0,
             0,        0,        contrast, 0.0,
-            transl,   transl,   transl,   1.0).times(Qt.matrix4x4(
-                rval + saturation, rval,     rval,     0.0,
-                gval,     gval + saturation, gval,     0.0,
-                bval,     bval,     bval + saturation, 0.0,
-                0,        0,        0,        1.0)).times(Qt.matrix4x4(
+            0,        0,        0,        1.0).times(Qt.matrix4x4(
+                saturation, 0.0,          0.0,        0.0,
+                0,          saturation,   0,          0.0,
+                0,          0,            saturation, 0.0,
+                0,          0,            0,          1.0)).times(Qt.matrix4x4(
                     intensity, 0,         0,         0,
                     0,         intensity, 0,         0,
                     0,         0,         intensity, 0,
