@@ -42,7 +42,7 @@ If you would like to use the same videos but offline, simply download them using
 ```
 while read -r link; do
     wget "$link"
-done < file_that_you_want_to_download
+done < playlist_file
 ```
 
 ### Changing settings in `theme.conf.user`
