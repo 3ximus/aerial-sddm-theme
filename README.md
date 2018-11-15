@@ -37,6 +37,14 @@ If you wish to play local videos files just use the following command to generat
 
 `find <path-to-your-directory> -maxdepth 1 -type f > <playlist-file>`
 
+If you would like to use the same videos but offline, simply download them using your shell, e.g. :
+
+```
+while read -r link; do
+    wget "$link"
+done < file_that_you_want_to_download
+```
+
 ### Changing settings in `theme.conf.user`
 
 You can change a few settings in this file
