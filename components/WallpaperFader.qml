@@ -22,9 +22,6 @@ import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.1
 import QtGraphicalEffects 1.0
 
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
-
 Item {
     id: wallpaperFader
     property Item mainStack
@@ -32,7 +29,6 @@ Item {
     property alias source: wallpaperBlur.source
     state: lockScreenRoot.uiVisible ? "on" : "off"
     property real factor: 20
-    readonly property bool lightBackground: Math.max(PlasmaCore.ColorScope.backgroundColor.r, PlasmaCore.ColorScope.backgroundColor.g, PlasmaCore.ColorScope.backgroundColor.b) > 0.5
 
     Behavior on factor {
         NumberAnimation {
@@ -60,7 +56,7 @@ Item {
 
         readonly property real contrast: 0.45 * wallpaperFader.factor + (1 - wallpaperFader.factor)
         readonly property real saturation: 1.7 * wallpaperFader.factor + (1 - wallpaperFader.factor)
-        readonly property real intensity: (wallpaperFader.lightBackground ? 1.7 : 0.45) * wallpaperFader.factor + (1 - wallpaperFader.factor)
+        readonly property real intensity: wallpaperFader.factor + (1 - wallpaperFader.factor)
 
         property var colorMatrix: Qt.matrix4x4(
             contrast, 0,        0,        0.0,
