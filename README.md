@@ -9,6 +9,11 @@ Videos are played randomly and diferent playlists are used based on time of day 
 
 It is necessary to have the Phonon GStreamer backend for qt5, GStreamer ffmpeg Plugin and GStreamer Plugins Good
 - For Arch linux : `pacman -S gst-libav phonon-qt5-gstreamer gst-plugins-good`
+- For Gentoo : these settings allowed me to make the theme work
+
+    * `media-libs/gst-plugins-good`
+    * `USE="alsa gsteamer qml widgets" dev-qt/qtmultimedia`
+    * `USE="gstreamer" media-libs/phonon`
 
 Havent tryed for other distros...
 
@@ -31,6 +36,14 @@ If there is no active connection or the video can't be played the background wil
 If you wish to play local videos files just use the following command to generate the playlist-file (playlist_day.m3u or playlist_night.m3u) from a directory containing the videos:
 
 `find <path-to-your-directory> -maxdepth 1 -type f > <playlist-file>`
+
+If you would like to use the same videos but offline, simply download them using your shell, e.g. :
+
+```
+while read -r link; do
+    wget "$link"
+done < playlist_file
+```
 
 ### Changing settings in `theme.conf.user`
 
