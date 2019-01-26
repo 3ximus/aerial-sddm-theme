@@ -8,7 +8,8 @@ Videos are played randomly and diferent playlists are used based on time of day 
 ### Dependencies
 
 It is necessary to have the Phonon GStreamer backend for qt5, GStreamer ffmpeg Plugin and GStreamer Plugins Good
-- For Arch linux : `pacman -S gst-libav phonon-qt5-gstreamer gst-plugins-good`
+- For Arch linux : `pacman -S gst-libav phonon-qt5-gstreamer gst-plugins-good qt5-quickcontrols qt5-graphicaleffects
+`
 - For Gentoo : these settings allowed me to make the theme work
 
     * `media-libs/gst-plugins-good`
