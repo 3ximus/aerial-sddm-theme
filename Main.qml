@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import SddmComponents 2.0
-import QtMultimedia 5.8
+import QtMultimedia 5.7
 
 import "components"
 
