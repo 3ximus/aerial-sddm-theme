@@ -376,6 +376,7 @@ Rectangle {
         anchors.top: parent.top;
         anchors.horizontalCenter: parent.horizontalCenter
         color: "transparent"
+        visible: config.showTopBar != "false"
 
         Row {
             id: row_left
