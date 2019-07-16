@@ -8,3 +8,4 @@ relativePositionY=0.75
 showLoginButton=false
 type=color
 usernameLeftMargin=15
+showTopBar=true

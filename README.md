@@ -56,6 +56,7 @@ You can change a few settings in this file
 - `showClearPasswordButton` - if set to false will hide the clear password button that appears when text is inputed
 - `passwordLeftMargin` and `usernameLeftMargin` - set margin between input boxes and labels, some fonts are messy and allows fixing of overlap
 - `relativePositionX` and `relativePositionY` - position the login text box and clock
+- `showTopBar` - if set to false will hide the wm/keyboard top bar
 
 Example config (not the same as the screenshots):
 
@@ -67,6 +68,7 @@ displayFont="Misc Fixed"
 showLoginButton=false
 passwordLeftMargin=15
 usernameLeftMargin=15
+showTopBar=true
 ```
 
 ## Preview
