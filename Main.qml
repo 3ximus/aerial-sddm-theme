@@ -67,7 +67,15 @@ Rectangle {
             id: mouseArea1
             anchors.fill: parent;
             //onPressed: {playlist1.shuffle(); playlist1.next();}
-            onPressed: { fader1.state = fader1.state == "off" ? "on" : "off" ; }
+            onPressed: {
+                fader1.state = fader1.state == "off" ? "on" : "off" ;
+                if (config.autofocusInput == "true") {
+                    if (username_input_box.text == "")
+                        username_input_box.focus = true
+                    else
+                        password_input_box.focus = true
+                }
+            }
         }
         Keys.onPressed: {
             fader1.state = "on";
@@ -106,7 +114,15 @@ Rectangle {
             id: mouseArea2
             enabled: false
             anchors.fill: parent;
-            onPressed: { fader2.state = fader2.state == "off" ? "on" : "off" ; }
+            onPressed: {
+                fader1.state = fader1.state == "off" ? "on" : "off" ;
+                if (config.autofocusInput == "true") {
+                    if (username_input_box.text == "")
+                        username_input_box.focus = true
+                    else
+                        password_input_box.focus = true
+                }
+            }
         }
         Behavior on opacity {
             enabled: true
