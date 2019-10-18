@@ -9,3 +9,4 @@ showLoginButton=false
 type=color
 usernameLeftMargin=15
 showTopBar=true
+autofocusInput=true
