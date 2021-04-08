@@ -15,6 +15,8 @@ It is necessary to have the Phonon GStreamer backend for qt5, GStreamer ffmpeg P
     * `USE="alsa gsteamer qml widgets" dev-qt/qtmultimedia`
     * `USE="gstreamer" media-libs/phonon`
 
+ - For Kubuntu: `apt install gstreamer1.0-libav phonon4qt5-backend-gstreamer gstreamer1.0-plugins-good qml-module-qtquick-controls qml-module-qtgraphicaleffects qml-module-qtmultimedia qt5-default`
+
 Havent tryed for other distros...
 
 ### Installation
