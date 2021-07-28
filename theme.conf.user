@@ -1,6 +1,6 @@
 [General]
-background_day=playlists/day.m3u
-background_night=playlists/night.m3u
+background_vid_day=playlists/day.m3u
+background_vid_night=playlists/night.m3u
 displayFont="Misc Fixed"
 passwordLeftMargin=15
 relativePositionX=0.5
