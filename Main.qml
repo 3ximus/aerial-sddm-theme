@@ -43,8 +43,9 @@ Rectangle {
 
     // Set Background Image
     Image {
+        id: image1
         anchors.fill: parent
-        source: config.background
+        //source: config.background
         fillMode: Image.PreserveAspectCrop
     }
 
@@ -505,11 +506,13 @@ Rectangle {
         // load and randomize playlist
         var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
         if ( time >= 5 && time <= 17 ) {
-            playlist1.load(Qt.resolvedUrl(config.background_day), 'm3u')
-            playlist2.load(Qt.resolvedUrl(config.background_day), 'm3u')
+            playlist1.load(Qt.resolvedUrl(config.background_vid_day), 'm3u')
+            playlist2.load(Qt.resolvedUrl(config.background_vid_day), 'm3u')
+            image1.source = config.background_img_day
         } else {
-            playlist1.load(Qt.resolvedUrl(config.background_night), 'm3u')
-            playlist2.load(Qt.resolvedUrl(config.background_night), 'm3u')
+            playlist1.load(Qt.resolvedUrl(config.background_vid_night), 'm3u')
+            playlist2.load(Qt.resolvedUrl(config.background_vid_night), 'm3u')
+            image1.source = config.background_img_night
         }
 
         for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {
