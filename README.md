@@ -50,8 +50,8 @@ done < playlist_file
 ### Changing settings in `theme.conf.user`
 
 You can change a few settings in this file
-- `background` - default background image
-- `background_day` and `background_night` - video playlists
+- `background_img_day` and `background_img_night` - default background day/night image
+- `background_vid_day` and `background_vid_night` - video playlists
 - `displayFont` - font
 - `showLoginButton` - if set to false will hide the login button
 - `showClearPasswordButton` - if set to false will hide the clear password button that appears when text is inputed
@@ -63,8 +63,8 @@ Example config (not the same as the screenshots):
 
 ```
 [General]
-background_day=playlist_day.m3u
-background_night=playlist_night.m3u
+background_vid_day=playlist_day.m3u
+background_vid_night=playlist_night.m3u
 displayFont="Misc Fixed"
 showLoginButton=false
 passwordLeftMargin=15
