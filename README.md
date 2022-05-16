@@ -20,6 +20,7 @@ It is necessary to have the Phonon GStreamer backend for qt5, GStreamer ffmpeg P
     * `media-plugins/gst-plugins-libde265` (optional for video)
 
  - For Kubuntu: `apt install gstreamer1.0-libav phonon4qt5-backend-gstreamer gstreamer1.0-plugins-good qml-module-qtquick-controls qml-module-qtgraphicaleffects qml-module-qtmultimedia qt5-default`
+ - For Lubuntu 22.04: `sudo apt-get install gstreamer1.0-libav qml-module-qtmultimedia libqt5multimedia5-plugins`
 
 Havent tryed for other distros...
 
