@@ -21,10 +21,10 @@ Rectangle {
     // Set SDDM actions
     Connections {
         target: sddm
-        onLoginSucceeded: {
+        function onLoginSucceeded() {
         }
 
-        onLoginFailed: {
+        function onLoginFailed() {
             error_message.color = "#dc322f"
             error_message.text = textConstants.loginFailed
         }
@@ -439,7 +439,9 @@ Rectangle {
                 Connections {
                     target: keyboard
 
-                    onCurrentLayoutChanged: combo.index = keyboard.currentLayout
+                    function onCurrentLayoutChanged() {
+                        combo.index = keyboard.currentLayout
+                    }
                 }
 
                 rowDelegate: Rectangle {
