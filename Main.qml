@@ -507,7 +507,7 @@ Rectangle {
 
         // load and randomize playlist
         var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
-        if ( time >= 5 && time <= 17 ) {
+        if ( time >= config.day_time_start && time <= config.day_time_end ) {
             playlist1.load(Qt.resolvedUrl(config.background_vid_day), 'm3u')
             playlist2.load(Qt.resolvedUrl(config.background_vid_day), 'm3u')
             image1.source = config.background_img_day
