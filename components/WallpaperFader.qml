@@ -128,13 +128,13 @@ Item {
                 NumberAnimation {
                     target: mainStack
                     property: "opacity"
-                    duration: units.longDuration
+                    duration: 500
                     easing.type: Easing.InOutQuad
                 }
                 NumberAnimation {
                     target: footer
                     property: "opacity"
-                    duration: units.longDuration
+                    duration: 500
                     easing.type: Easing.InOutQuad
                 }
             }

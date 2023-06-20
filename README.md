@@ -56,6 +56,7 @@ done < playlist_file
 ### Changing settings in `theme.conf.user`
 
 You can change a few settings in this file
+- `day_time_start` and `day_time_end` - set your day start/end time
 - `background_img_day` and `background_img_night` - default background day/night image
 - `background_vid_day` and `background_vid_night` - video playlists
 - `displayFont` - font
