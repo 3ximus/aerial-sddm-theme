@@ -49,6 +49,14 @@ Rectangle {
         fillMode: Image.PreserveAspectCrop
     }
 
+    // Set Animated GIF Background Image                                                                                                                                                                                                                                                  
+    AnimatedImage {                                                                                                                                                                                                                                                                       
+        id: animatedGIF1                                                                                                                                                                                                                                                                  
+        anchors.fill: parent                                                                                                                                                                                                                                                              
+        //source: "mepwyd8.gif"                                                                                                                                                                                                                                                           
+        fillMode: AnimatedImage.PreserveAspectCrop                                                                                                                                                                                                                                        
+    }
+
     // Set Background Video1
     MediaPlayer {
         id: mediaplayer1
@@ -510,11 +518,31 @@ Rectangle {
         if ( time >= config.day_time_start && time <= config.day_time_end ) {
             playlist1.load(Qt.resolvedUrl(config.background_vid_day), 'm3u')
             playlist2.load(Qt.resolvedUrl(config.background_vid_day), 'm3u')
-            image1.source = config.background_img_day
+            //image1.source = config.background_img_day
+            if ( config.backgroud_img_day !== null ) {
+                //image1.source = config.background_img_day
+                var fileType = config.background_img_day.substring(config.background_img_day.lastIndexOf(".") + 1)
+                console.log(fileType)
+                if (fileType === "gif") {
+                        animatedGIF1.source = config.background_img_day
+                } else {
+                        image1.source = config.background_img_day
+                }
+            }
         } else {
             playlist1.load(Qt.resolvedUrl(config.background_vid_night), 'm3u')
             playlist2.load(Qt.resolvedUrl(config.background_vid_night), 'm3u')
-            image1.source = config.background_img_night
+            //image1.source = config.background_img_night
+            if ( config.backgroud_img_night !== null ) {
+                //image1.source = config.background_img_night
+                var fileType = config.background_img_night.substring(config.background_img_night.lastIndexOf(".") + 1)
+                console.log(fileType)
+                if (fileType === "gif") {
+                        animatedGIF1.source = config.background_img_night
+                } else {
+                        image1.source = config.background_img_night
+                }
+            }
         }
 
         for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {

@@ -2,7 +2,7 @@
 
 SDDM theme with Apple TV Aerial videos
 
-Videos are played randomly and diferent playlists are used based on time of day (only day and night diferenciation, night between 5pm - 5am) its possible to tweak to have more time diferentiation, the one used is provided with the videos.
+Videos are played randomly and different playlists are used based on time of day (only day and night diferenciation, night between 5pm - 5am) its possible to tweak to have more time diferentiation, the one used is provided with the videos.
 
 
 ### Dependencies
@@ -58,7 +58,7 @@ done < playlist_file
 
 You can change a few settings in this file
 - `day_time_start` and `day_time_end` - set your day start/end time
-- `background_img_day` and `background_img_night` - default background day/night image
+- `background_img_day` and `background_img_night` - default background day/night image, now support GIF animated image
 - `background_vid_day` and `background_vid_night` - video playlists
 - `displayFont` - font
 - `showLoginButton` - if set to false will hide the login button
