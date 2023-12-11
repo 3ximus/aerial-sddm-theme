@@ -49,12 +49,11 @@ Rectangle {
         fillMode: Image.PreserveAspectCrop
     }
 
-    // Set Animated GIF Background Image                                                                                                                                                                                                                                                  
-    AnimatedImage {                                                                                                                                                                                                                                                                       
-        id: animatedGIF1                                                                                                                                                                                                                                                                  
-        anchors.fill: parent                                                                                                                                                                                                                                                              
-        //source: "mepwyd8.gif"                                                                                                                                                                                                                                                           
-        fillMode: AnimatedImage.PreserveAspectCrop                                                                                                                                                                                                                                        
+    // Set Animated GIF Background Image
+    AnimatedImage {
+        id: animatedGIF1
+        anchors.fill: parent
+        fillMode: AnimatedImage.PreserveAspectCrop
     }
 
     // Set Background Video1
@@ -110,7 +109,6 @@ Rectangle {
         autoPlay: true; muted: true
         playlist: Playlist {
             id: playlist2; playbackMode: Playlist.Random
-            //onLoaded: { mediaplayer2.play() }
         }
     }
 
@@ -217,8 +215,6 @@ Rectangle {
 
         Rectangle {
             id: login_container
-
-            //y: parent.height * 0.8
             y: clock.y + clock.height + 30
             width: clock.width
             height: parent.height * 0.08
@@ -465,7 +461,6 @@ Rectangle {
                         text: modelItem ? modelItem.modelData.shortName : "zz"
                         font.family: textFont.name
                         font.pixelSize: 14
-                        //color: "white"
                         color: "#505050"
                     }
                 }
@@ -532,9 +527,7 @@ Rectangle {
         } else {
             playlist1.load(Qt.resolvedUrl(config.background_vid_night), 'm3u')
             playlist2.load(Qt.resolvedUrl(config.background_vid_night), 'm3u')
-            //image1.source = config.background_img_night
             if ( config.backgroud_img_night !== null ) {
-                //image1.source = config.background_img_night
                 var fileType = config.background_img_night.substring(config.background_img_night.lastIndexOf(".") + 1)
                 console.log(fileType)
                 if (fileType === "gif") {
