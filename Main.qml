@@ -204,14 +204,37 @@ Rectangle {
         anchors.fill: parent
         color: "transparent"
 
-        Clock {
+        Column {
             id: clock
+            property date dateTime: new Date()
+            property color color: "white"
             y: parent.height * config.relativePositionY - clock.height / 2
             x: parent.width * config.relativePositionX - clock.width / 2
-            color: "white"
-            timeFont.family: textFont.name
-            dateFont.family: textFont.name
+
+            Timer {
+                interval: 100; running: true; repeat: true;
+                onTriggered: clock.dateTime = new Date()
+            }
+
+            Text {
+                id: time
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: clock.color
+                text : Qt.formatTime(clock.dateTime, config.timeFormat || "hh:mm")
+                font.pointSize: 72
+                font.family: textFont.name
+            }
+
+            Text {
+                id: date
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: clock.color
+                text : Qt.formatDate(clock.dateTime, Qt.DefaultLocaleLongDate)
+                font.family: textFont.name
+                font.pointSize: 24
+            }
         }
+
 
         Rectangle {
             id: login_container
