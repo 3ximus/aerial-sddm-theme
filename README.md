@@ -57,10 +57,12 @@ done < playlist_file
 ### Changing settings in `theme.conf.user`
 
 You can change a few settings in this file
-- `day_time_start` and `day_time_end` - set your day start/end time
-- `background_img_day` and `background_img_night` - default background day/night image, now support GIF animated image
-- `background_vid_day` and `background_vid_night` - video playlists
+- `dayTimeStart` and `dayTimeEnd` - set your day start/end time
+- `bgImgDay` and `bgImgNight` - default background day/night image, now support GIF animated image
+- `bgVidDay` and `bgImgNight` - video day/night playlists
 - `displayFont` - font
+- `clockFontSize`, `dateFontSize`, `labelFontSize`, `errorMsgFontSize` and `languageBoxFontSize` - customize font size
+- `timeFormat` - customize time format
 - `showLoginButton` - if set to false will hide the login button
 - `showClearPasswordButton` - if set to false will hide the clear password button that appears when text is inputed
 - `passwordLeftMargin` and `usernameLeftMargin` - set margin between input boxes and labels, some fonts are messy and allows fixing of overlap
@@ -71,8 +73,8 @@ Example config (not the same as the screenshots):
 
 ```
 [General]
-background_vid_day=playlist_day.m3u
-background_vid_night=playlist_night.m3u
+bgVidDay=playlist_day.m3u
+bgVidNight=playlist_night.m3u
 displayFont="Misc Fixed"
 showLoginButton=false
 passwordLeftMargin=15

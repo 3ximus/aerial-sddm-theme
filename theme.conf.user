@@ -1,8 +1,8 @@
 [General]
-day_time_start=7
-day_time_start=19
-background_vid_day=playlists/day.m3u
-background_vid_night=playlists/night.m3u
+dayTimeStart=7
+dayTimeEnd=19
+bgVidDay=playlists/day.m3u
+bgVidNight=playlists/night.m3u
 displayFont="Misc Fixed"
 passwordLeftMargin=15
 relativePositionX=0.5

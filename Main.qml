@@ -221,7 +221,7 @@ Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: clock.color
                 text : Qt.formatTime(clock.dateTime, config.timeFormat || "hh:mm")
-                font.pointSize: 72
+                font.pointSize: config.clockFontSize
                 font.family: textFont.name
             }
 
@@ -231,7 +231,7 @@ Rectangle {
                 color: clock.color
                 text : Qt.formatDate(clock.dateTime, Qt.DefaultLocaleLongDate)
                 font.family: textFont.name
-                font.pointSize: 24
+                font.pointSize: config.dateFontSize
             }
         }
 
@@ -262,7 +262,7 @@ Rectangle {
                     horizontalAlignment: Text.AlignLeft
                     font.family: textFont.name
                     font.bold: true
-                    font.pixelSize: 16
+                    font.pixelSize: config.labelFontSize
                     color: "white"
                     text: "Username"
                     anchors.verticalCenter: parent.verticalCenter
@@ -312,7 +312,7 @@ Rectangle {
                     horizontalAlignment: Text.AlignLeft
                     font.family: textFont.name
                     font.bold: true
-                    font.pixelSize: 16
+                    font.pixelSize: config.labelFontSize
                     color: "white"
                 }
 
@@ -401,7 +401,7 @@ Rectangle {
                     id: error_message
                     height: parent.height
                     font.family: textFont.name
-                    font.pixelSize: 12
+                    font.pixelSize: config.errorMsgFontSize
                     color: "white"
                     anchors.top: password_input_box.bottom
                     anchors.left: password_input_box.left
@@ -483,7 +483,7 @@ Rectangle {
 
                         text: modelItem ? modelItem.modelData.shortName : "zz"
                         font.family: textFont.name
-                        font.pixelSize: 14
+                        font.pixelSize: config.languageBoxFontSize
                         color: "#505050"
                     }
                 }
@@ -533,30 +533,30 @@ Rectangle {
 
         // load and randomize playlist
         var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
-        if ( time >= config.day_time_start && time <= config.day_time_end ) {
-            playlist1.load(Qt.resolvedUrl(config.background_vid_day), 'm3u')
-            playlist2.load(Qt.resolvedUrl(config.background_vid_day), 'm3u')
-            //image1.source = config.background_img_day
-            if ( config.backgroud_img_day !== null ) {
-                //image1.source = config.background_img_day
-                var fileType = config.background_img_day.substring(config.background_img_day.lastIndexOf(".") + 1)
-                console.log(fileType)
+        if ( time >= config.dayTimeStart && time <= config.dayTimeEnd ) {
+            playlist1.load(Qt.resolvedUrl(config.bgVidDay), 'm3u')
+            playlist2.load(Qt.resolvedUrl(config.bgVidDay), 'm3u')
+            //image1.source = config.bgImgDay
+            if ( config.bgImgDay !== null ) {
+                //image1.source = config.bgImgDay
+                var fileType = config.bgImgDay.substring(config.bgImgDay.lastIndexOf(".") + 1)
+                //console.log(fileType)
                 if (fileType === "gif") {
-                        animatedGIF1.source = config.background_img_day
+                        animatedGIF1.source = config.bgImgDay
                 } else {
-                        image1.source = config.background_img_day
+                        image1.source = config.bgImgDay
                 }
             }
         } else {
-            playlist1.load(Qt.resolvedUrl(config.background_vid_night), 'm3u')
-            playlist2.load(Qt.resolvedUrl(config.background_vid_night), 'm3u')
-            if ( config.backgroud_img_night !== null ) {
-                var fileType = config.background_img_night.substring(config.background_img_night.lastIndexOf(".") + 1)
-                console.log(fileType)
+            playlist1.load(Qt.resolvedUrl(config.bgVidNight), 'm3u')
+            playlist2.load(Qt.resolvedUrl(config.bgVidNight), 'm3u')
+            if ( config.bgImgNight !== null ) {
+                var fileType = config.bgImgNight.substring(config.bgImgNight.lastIndexOf(".") + 1)
+                //console.log(fileType)
                 if (fileType === "gif") {
-                        animatedGIF1.source = config.background_img_night
+                        animatedGIF1.source = config.bgImgNight
                 } else {
-                        image1.source = config.background_img_night
+                        image1.source = config.bgImgNight
                 }
             }
         }
@@ -574,4 +574,3 @@ Rectangle {
         clear_passwd_button.visible = false
     }
 }
-
