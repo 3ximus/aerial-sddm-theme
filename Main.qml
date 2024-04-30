@@ -229,7 +229,7 @@ Rectangle {
                 id: date
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: clock.color
-                text : Qt.formatDate(clock.dateTime, Qt.DefaultLocaleLongDate)
+                text : Qt.formatDate(clock.dateTime, config.dateFormat || "dddd, dd MMMM yyyy")
                 font.family: textFont.name
                 font.pointSize: config.dateFontSize
             }
