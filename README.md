@@ -82,6 +82,14 @@ usernameLeftMargin=15
 showTopBar=true
 ```
 
+### Note that some configs names have changed from previous values:
+```
+day_time_start  => dayTimeStart
+day_time_end  => dayTimeEnd
+background_vid_day  => bgVidDay
+background_vid_night  => bgVidNight
+```
+
 ## Preview
 
 ![preview1](screens/preview1.gif)
