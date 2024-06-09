@@ -61,7 +61,8 @@ You can change a few settings in this file
 - `bgImgDay` and `bgImgNight` - default background day/night image, now support GIF animated image
 - `bgVidDay` and `bgImgNight` - video day/night playlists
 - `displayFont` - font
-- `clockFontSize`, `dateFontSize`, `labelFontSize`, `errorMsgFontSize` and `languageBoxFontSize` - customize font size
+- `clockFontSize`, `dateFontSize`, `labelFontSize`, `errorMsgFontSize` and `actionBarFontSize` - customize font size
+- `clockFontColor`, `labelFontColor` and `actionBarFontColor` - customize font color
 - `dateFormat` and `timeFormat` - customize [date and time](https://doc.qt.io/qt-5/qml-qtqml-date.html) format
 - `showLoginButton` - if set to false will hide the login button
 - `showClearPasswordButton` - if set to false will hide the clear password button that appears when text is inputed
@@ -84,10 +85,11 @@ showTopBar=true
 
 ### Note that some configs names have changed from previous values:
 ```
-day_time_start  => dayTimeStart
-day_time_end  => dayTimeEnd
-background_vid_day  => bgVidDay
-background_vid_night  => bgVidNight
+day_time_start => dayTimeStart
+day_time_end => dayTimeEnd
+background_vid_day => bgVidDay
+background_vid_night => bgVidNight
+languageBoxFontSize => actionBarFontSize
 ```
 
 ## Preview
