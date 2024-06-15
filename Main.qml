@@ -25,7 +25,7 @@ Rectangle {
         }
 
         function onLoginFailed() {
-            error_message.color = "#dc322f"
+            error_message.color = config.errorMsgFontColor
             error_message.text = textConstants.loginFailed
         }
     }
@@ -207,7 +207,7 @@ Rectangle {
         Column {
             id: clock
             property date dateTime: new Date()
-            property color color: "white"
+            property color color: config.clockFontColor
             y: parent.height * config.relativePositionY - clock.height / 2
             x: parent.width * config.relativePositionX - clock.width / 2
 
@@ -263,7 +263,7 @@ Rectangle {
                     font.family: textFont.name
                     font.bold: true
                     font.pixelSize: config.labelFontSize
-                    color: "white"
+                    color: config.labelFontColor
                     text: "Username"
                     anchors.verticalCenter: parent.verticalCenter
                 }
@@ -280,7 +280,7 @@ Rectangle {
                     font: textFont.name
                     color: "#25000000"
                     borderColor: "transparent"
-                    textColor: "white"
+                    textColor: config.labelFontColor
 
                     Keys.onPressed: {
                         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
@@ -313,7 +313,7 @@ Rectangle {
                     font.family: textFont.name
                     font.bold: true
                     font.pixelSize: config.labelFontSize
-                    color: "white"
+                    color: config.labelFontColor
                 }
 
                 PasswordBox {
@@ -327,7 +327,7 @@ Rectangle {
                     anchors.left: password_label.right
                     anchors.leftMargin: config.passwordLeftMargin
                     borderColor: "transparent"
-                    textColor: "white"
+                    textColor: config.labelFontColor
                     tooltipBG: "#25000000"
                     tooltipFG: "#dc322f"
                     image: "components/resources/warning_red.png"
@@ -357,6 +357,7 @@ Rectangle {
                     width: parent.height
                     color: "transparent"
                     text: "x"
+                    textColor: config.labelFontColor
                     font: textFont.name
 
                     border.color: "transparent"
@@ -388,7 +389,7 @@ Rectangle {
                     disabledColor: "#dc322f"
                     activeColor: "#268bd2"
                     pressedColor: "#2aa198"
-                    textColor: "white"
+                    textColor: config.labelFontColor
                     font: textFont.name
 
                     onClicked: sddm.login(username_input_box.text, password_input_box.text, session.index)
@@ -402,7 +403,7 @@ Rectangle {
                     height: parent.height
                     font.family: textFont.name
                     font.pixelSize: config.errorMsgFontSize
-                    color: "white"
+                    //color: "white"
                     anchors.top: password_input_box.bottom
                     anchors.left: password_input_box.left
                     anchors.leftMargin: 0
@@ -436,9 +437,11 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 color: "transparent"
                 arrowColor: "transparent"
-                textColor: "#505050"
+                textColor: config.actionBarFontColor
                 borderColor: "transparent"
                 hoverColor: "#5692c4"
+                font.family: textFont.name
+                font.pixelSize: config.actionBarFontSize
 
                 model: sessionModel
                 index: sessionModel.lastIndex
@@ -457,7 +460,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 color: "transparent"
                 arrowColor: "transparent"
-                textColor: "white"
+                //textColor: "white"
                 borderColor: "transparent"
                 hoverColor: "#5692c4"
 
@@ -483,8 +486,8 @@ Rectangle {
 
                         text: modelItem ? modelItem.modelData.shortName : "zz"
                         font.family: textFont.name
-                        font.pixelSize: config.languageBoxFontSize
-                        color: "#505050"
+                        font.pixelSize: config.actionBarFontSize
+                        color: config.actionBarFontColor
                     }
                 }
                 KeyNavigation.backtab: session
