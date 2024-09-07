@@ -30,8 +30,8 @@ Havent tryed for other distros...
 
 Simply clone the repository and copy it to `/usr/share/sddm/themes/` like this:
 ```
-git clone git@github.com:3ximus/aerial-sddm-theme.git
-mv aerial-sddm-theme /usr/share/sddm/themes
+git clone https://github.com/3ximus/aerial-sddm-theme
+sudo mv aerial-sddm-theme /usr/share/sddm/themes
 ```
 *Note that super user priviledges are needed to move files into that directory.*
 
