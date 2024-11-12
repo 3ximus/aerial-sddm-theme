@@ -54,6 +54,11 @@ while read -r link; do
 done < playlist_file
 ```
 
+### Changing settings in `Main.qml`
+
+You can change a few settings in this file
+- `font.bold` - set true or false to enable or disable bold font
+
 ### Changing settings in `theme.conf.user`
 
 You can change a few settings in this file
