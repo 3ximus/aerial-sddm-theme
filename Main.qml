@@ -263,7 +263,6 @@ Rectangle {
                     height: parent.height * 0.66
                     horizontalAlignment: Text.AlignLeft
                     font.family: textFont.name
-                    font.bold: true
                     font.pixelSize: config.labelFontSize
                     font.bold: true
                     color: config.labelFontColor
