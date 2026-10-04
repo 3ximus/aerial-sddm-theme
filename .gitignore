@@ -2,3 +2,9 @@
 
 /playlist_videos/*
 !/playlist_videos/*.md
+ 
+# Build artifacts
+build/
+
+# Local test videos
+test_videos/

@@ -2,57 +2,65 @@
 
 SDDM theme with Apple TV Aerial videos
 
-Videos are played randomly and different playlists are used based on time of day (only day and night diferenciation, night between 5pm - 5am) its possible to tweak to have more time diferentiation, the one used is provided with the videos.
+Videos are selected randomly from day and night lists. The switch is controlled by `dayTimeStart` and `dayTimeEnd` in `theme.conf` (defaults: 7 and 19).
 
 
 ### Dependencies
 
-It is necessary to have the Phonon GStreamer backend for qt5, GStreamer ffmpeg Plugin and GStreamer Plugins Good
-- For Arch linux : `pacman -S gst-libav phonon-qt5-gstreamer gst-plugins-good qt5-quickcontrols qt5-graphicaleffects qt5-multimedia`
-- For Gentoo : these settings allowed me to make the theme work
+This theme requires an SDDM greeter built with Qt6 and Qt 6.11 or newer. It imports `QtQuick 2.15` and `QtMultimedia 6.11`; SDDM provides the `SddmComponents 2.0` module. Install the Qt6 QML runtime, Qt Multimedia QML module, and its FFmpeg playback backend. Package names vary by distribution and release; older Qt5, GStreamer, and Phonon package instructions do not apply to this theme.
 
-    * `media-libs/gst-plugins-good`
-    * `USE="alsa gstreamer qml widgets" dev-qt/qtmultimedia`
-    * `USE="widgets" dev-qt/qtquickcontrols`
-    * `dev-qt/qtgraphicaleffects`
-    * `USE="gstreamer" media-libs/phonon`
-    * `media-plugins/gst-plugins-openh264` (optional for video)
-    * `media-plugins/gst-plugins-libde265` (optional for video)
-
- - For Kubuntu: `apt install gstreamer1.0-libav phonon4qt5-backend-gstreamer gstreamer1.0-plugins-good qml-module-qtquick-controls qml-module-qtgraphicaleffects qml-module-qtmultimedia qt5-default`
- - For Lubuntu 22.04: `sudo apt-get install gstreamer1.0-libav qml-module-qtmultimedia libqt5multimedia5-plugins`
- - For Debian 12 LXQt: `sudo apt-get install gstreamer1.0-libav qml-module-qtmultimedia libqt5multimedia5-plugins`
- - For Fedora 36 LXQt spin: `sudo dnf install git qt5-qtgraphicaleffects qt5-qtquickcontrols gstreamer1-libav`. Make sure setup [RPM Fusion Repo](https://rpmfusion.org/Configuration) first to get gstreamer1-libav package.
-
-Havent tryed for other distros...
 
 ### Installation
 
-Simply clone the repository and copy it to `/usr/share/sddm/themes/` like this:
-```
-git clone git@github.com:3ximus/aerial-sddm-theme.git
-mv aerial-sddm-theme /usr/share/sddm/themes
-```
-*Note that super user priviledges are needed to move files into that directory.*
+An SDDM theme is installed as a directory containing `metadata.desktop`, `Main.qml`, the theme configuration, and its assets. The commands below use `/usr/share/sddm/themes/aerial-sddm-theme`; adjust the destination if your system uses a different SDDM theme directory.
 
-The theme can be tested by running `sddm-greeter --test-mode --theme <path-to-this-repository>`
+#### With `just`
+
+From the repository directory:
+
+```sh
+just check
+just test
+just install
+```
+
+`just test` runs the Qt6 SDDM greeter preview and sets `QML_XHR_ALLOW_FILE_READ=1` for that command so preview mode can read `theme.conf.user`. This variable is not needed by the installed greeter. If your Qt6 greeter is named `sddm-greeter`, run `SDDM_GREETER=sddm-greeter just test`. `just install` copies only runtime files and requires `sudo`. To create a release archive, run `just package`; it writes `build/aerial-sddm-theme.tar.gz`. The archive excludes local test configuration and repository metadata.
+
+#### Without `just`
+
+Test the theme directly from the repository:
+
+```sh
+QML_XHR_ALLOW_FILE_READ=1 sddm-greeter-qt6 --test-mode --theme .
+```
+
+If your Qt6 greeter is named `sddm-greeter`, use that executable name instead.
+
+Install from the repository with standard shell tools:
+
+```sh
+sudo install -d /usr/share/sddm/themes/aerial-sddm-theme
+sudo install -m 644 Main.qml metadata.desktop theme.conf /usr/share/sddm/themes/aerial-sddm-theme/
+sudo cp -a components /usr/share/sddm/themes/aerial-sddm-theme/
+```
+
+To prepare the same release archive without `just`:
+
+```
+mkdir -p build/aerial-sddm-theme
+cp -a Main.qml metadata.desktop theme.conf README.md LICENSE components build/aerial-sddm-theme/
+tar -czf build/aerial-sddm-theme.tar.gz -C build aerial-sddm-theme
+```
+
+Extract the archive, then use the install commands above from the extracted theme directory. For local development, a symlink from `/usr/share/sddm/themes/aerial-sddm-theme` to the repository is also convenient.
 
 ### Other notes
 
-This theme streams the HD videos so a good internet connection is necessary.
-If there is no active connection or the video can't be played the background will fallback to the image background.jpg
+The default playlists stream video, so they need an internet connection. Background images are configured beneath the video layers, but the theme does not currently switch to them automatically when a stream fails to load.
 
-If you wish to play local videos files just use the following command to generate the playlist-file (playlist_day.m3u or playlist_night.m3u) from a directory containing the videos:
+Edit `bgVidDay` and `bgVidNight` in `theme.conf.user` to customize the day and night videos. Separate URLs or local file paths with escaped `\n` sequences; Qt decodes each sequence as a newline between entries. A trailing backslash at the end of a physical line only wraps the config value and is not a playlist separator. Qt resolves local video paths directly, so playback no longer needs M3U file reads or `QML_XHR_ALLOW_FILE_READ`. Preview mode uses local XHR to read `theme.conf.user`; `just test` enables that access only for the preview process.
 
-`find <path-to-your-directory> -maxdepth 1 -type f > <playlist-file>`
-
-If you would like to use the same videos but offline, simply download them using your shell, e.g. :
-
-```
-while read -r link; do
-    wget "$link"
-done < playlist_file
-```
+The `playlists/` directory contains sample M3U lists, including day, night, 4K, and undersea selections. They are examples only; the theme does not load these files directly. To use one, copy its video URLs into `bgVidDay` or `bgVidNight`, separating entries with escaped `\n` sequences and wrapping the config value with trailing backslashes as shown below.
 
 ### Changing settings in `Main.qml`
 
@@ -62,13 +70,13 @@ You can change a few settings in this file
 ### Changing settings in `theme.conf.user`
 
 You can change a few settings in this file
-- `dayTimeStart` and `dayTimeEnd` - set your day start/end time
+- `dayTimeStart` and `dayTimeEnd` - set the hour boundaries used to choose the day/night playlist
 - `bgImgDay` and `bgImgNight` - default background day/night image, now support GIF animated image
-- `bgVidDay` and `bgImgNight` - video day/night playlists
+- `bgVidDay` and `bgVidNight` - escaped-`\n`-separated video URLs or local file paths for day/night
 - `displayFont` - font
 - `clockFontSize`, `dateFontSize`, `labelFontSize`, `errorMsgFontSize` and `actionBarFontSize` - customize font size
 - `clockFontColor`, `labelFontColor` and `actionBarFontColor` - customize font color
-- `dateFormat` and `timeFormat` - customize [date and time](https://doc.qt.io/qt-5/qml-qtqml-date.html) format
+- `dateFormat` and `timeFormat` - customize [date and time](https://doc.qt.io/qt-6/qml-qtqml-date.html) format
 - `showLoginButton` - if set to false will hide the login button
 - `showClearPasswordButton` - if set to false will hide the clear password button that appears when text is inputed
 - `passwordLeftMargin` and `usernameLeftMargin` - set margin between input boxes and labels, some fonts are messy and allows fixing of overlap
@@ -79,8 +87,10 @@ Example config (not the same as the screenshots):
 
 ```
 [General]
-bgVidDay=playlist_day.m3u
-bgVidNight=playlist_night.m3u
+bgVidDay=https://example.com/day-video-1.mov\n\
+    https://example.com/day-video-2.mov
+bgVidNight=https://example.com/night-video-1.mov\n\
+    https://example.com/night-video-2.mov
 displayFont="Misc Fixed"
 showLoginButton=false
 passwordLeftMargin=15
@@ -106,6 +116,13 @@ languageBoxFontSize => actionBarFontSize
 ## Using my custom theme.conf.user
 
 ![custom](screens/custom.gif)
+
+### Developer note: `theme.conf` vs `theme.conf.user` and `--test-mode`
+
+- The Qt6 SDDM greeter loads `theme.conf` from the theme directory and exposes its values to QML before the theme is instantiated.
+- `theme.conf.user` is provided as a separate, non-shipped override file so developers and testers can experiment without modifying the packaged `theme.conf` (useful when the theme is installed system-wide under `/usr/share/sddm/themes`).
+- In this repository `Main.qml` reads `theme.conf.user` during `--test-mode` only. When testing locally, prefer editing `theme.conf.user` rather than `theme.conf`; it is not included in installs or release archives.
+
 
 ## License
 

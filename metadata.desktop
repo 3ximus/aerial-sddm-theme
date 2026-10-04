@@ -6,11 +6,11 @@ Copyright=(c) 2016, Fabio Almeida
 License=CC-BY-SA
 Type=sddm-theme
 Version=0.1
-Website=https://github.com/3ximus/aerial-sddm-theme
+QtVersion=6
+Website=https://github.com/sedentaryrock/aerial-sddm-theme
 Screenshot=screens/screenshot.png
 MainScript=Main.qml
 ConfigFile=theme.conf
-Email=fabio_r11@hotmail.com
 Theme-Id=aerial-sddm
 Theme-API=2.0
 

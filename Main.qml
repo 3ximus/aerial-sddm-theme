@@ -1,17 +1,75 @@
-import QtQuick 2.0
+import QtQuick 2.15
 import SddmComponents 2.0
-import QtMultimedia 5.7
+import QtMultimedia 6.11
 
-import "components"
+import "components" as Theme
 
 Rectangle {
     // Main Container
     id: container
 
+    // Default config used for test-mode when SDDM doesn't inject `config`
+    property var config: ({
+        displayFont: "Sans",
+        clockFontColor: "white",
+        clockFontSize: 48,
+        dateFontSize: 16,
+        relativePositionX: 0.5,
+        relativePositionY: 0.25,
+        timeFormat: "hh:mm",
+        dateFormat: "dddd, dd MMMM yyyy",
+        bgVidDay: "http://sylvan.apple.com/Aerials/2x/Videos/comp_CH_C007_C011_PSNK_v02_SDR_PS_FINAL_20180709_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_CH_C002_C005_PSNK_v05_SDR_PS_FINAL_20180709_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_CH_C007_C004_PSNK_v02_SDR_PS_FINAL_20180709_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/HK_H004_C013_2K_SDR_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_A103_C002_0205DG_v12_SDR_FINAL_20180706_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_A108_C001_v09_SDR_FINAL_22062018_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_GMT308_139K_142NC_CARIBBEAN_DAY_v09_SDR_FINAL_22062018_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_A105_C003_0212CT_FLARE_v10_SDR_PS_FINAL_20180711_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_A009_C001_010181A_v09_SDR_PS_FINAL_20180725_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_A114_C001_0305OT_v10_SDR_FINAL_22062018_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_A001_C004_1207W5_v23_SDR_FINAL_20180706_SDR_2K_HEVC.mov",
+        bgVidNight: "http://sylvan.apple.com/Aerials/2x/Videos/comp_GMT312_162NC_139M_1041_AFRICA_NIGHT_v14_SDR_FINAL_20180706_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_GMT329_113NC_396B_1105_CHINA_v04_SDR_FINAL_20180706_F900F2700_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_A083_C002_1130KZ_v04_SDR_PS_FINAL_20180725_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_GMT329_117NC_401C_1037_IRELAND_TO_ASIA_v48_SDR_PS_FINAL_20180725_F0F6300_SDR_2K_HEVC.mov\\nhttp://sylvan.apple.com/Aerials/2x/Videos/comp_LA_A006_C004_v01_SDR_FINAL_PS_20180730_SDR_2K_HEVC.mov",
+        bgImgDay: "components/resources/background.jpg",
+        bgImgNight: "components/resources/background.jpg",
+        showLoginButton: "true",
+        showTopBar: "true",
+        actionBarFontColor: "white",
+        actionBarFontSize: 12,
+        labelFontSize: 14,
+        labelFontColor: "white",
+        usernameLeftMargin: 10,
+        passwordLeftMargin: 10,
+        showClearPasswordButton: "true",
+        errorMsgFontColor: "red",
+        errorMsgFontSize: 14,
+        dayTimeStart: 6,
+        dayTimeEnd: 18,
+        autofocusInput: "false"
+    })
+
+    // Keep a copy of the QML defaults so we can detect when values are still defaults
+    property var _defaults: (function() { try { return JSON.parse(JSON.stringify(config)) } catch (e) { return {} } })()
+
     LayoutMirroring.enabled: Qt.locale().textDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    property int sessionIndex: session.index
+    property int sessionIndex: (typeof session !== 'undefined' && session.index !== undefined) ? session.index : 0
+    property var languageModel: []
+    property bool previewMode: false
+
+    function rebuildLanguageModel() {
+        if (!keyboard || !keyboard.layouts) {
+            languageModel = []
+            return
+        }
+
+        var entries = []
+        for (var i = 0; i < keyboard.layouts.length; ++i) {
+            var entry = keyboard.layouts[i]
+            var name = ""
+
+            if (entry && typeof entry === "object") {
+                name = (entry.name !== undefined) ? entry.name : ((entry.label !== undefined) ? entry.label : String(entry))
+            } else {
+                name = String(entry)
+            }
+
+            entries.push({ name: name, value: i })
+        }
+
+        languageModel = entries
+    }
 
     // Inherited from SDDMComponents
     TextConstants {
@@ -21,18 +79,16 @@ Rectangle {
     // Set SDDM actions
     Connections {
         target: sddm
-        function onLoginSucceeded() {
-        }
-
         function onLoginFailed() {
             error_message.color = config.errorMsgFontColor
             error_message.text = textConstants.loginFailed
         }
     }
 
-    // Set Font
-    FontLoader {
-        id: textFont; name: config.displayFont
+    // Set Font (FontLoader.name is read-only in Qt6; use a simple QtObject to hold the family)
+    QtObject {
+        id: textFont
+        property string name: config.displayFont
     }
 
     // Background Fill
@@ -43,157 +99,244 @@ Rectangle {
 
     // Set Background Image
     Image {
-        id: image1
+        id: backgroundImage
         anchors.fill: parent
-        //source: config.background
         fillMode: Image.PreserveAspectCrop
     }
 
     // Set Animated GIF Background Image
     AnimatedImage {
-        id: animatedGIF1
+        id: animatedBackground
         anchors.fill: parent
         fillMode: AnimatedImage.PreserveAspectCrop
     }
 
-    // Set Background Video1
+    // Primary background video slot
     MediaPlayer {
-        id: mediaplayer1
-        autoPlay: true; muted: true
-        playlist: Playlist {
-            id: playlist1
-            playbackMode: Playlist.Random
-            onLoaded: { mediaplayer1.play() }
-        }
+        id: primaryPlayer
+        autoPlay: true
+        audioOutput: primaryAudio
+        videoOutput: primaryVideo
+    }
+    AudioOutput {
+        id: primaryAudio
+        muted: container.videoAudioMuted
     }
 
     VideoOutput {
-        id: video1
+        id: primaryVideo
         fillMode: VideoOutput.PreserveAspectCrop
-        anchors.fill: parent; source: mediaplayer1
+        anchors.fill: parent
         MouseArea {
-            id: mouseArea1
+            id: primaryVideoMouseArea
             anchors.fill: parent;
-            //onPressed: {playlist1.shuffle(); playlist1.next();}
             onPressed: {
-                fader1.state = fader1.state == "off" ? "on" : "off" ;
-                if (config.autofocusInput == "true") {
-                    if (username_input_box.text == "")
-                        username_input_box.focus = true
-                    else
-                        password_input_box.focus = true
-                }
+                container.toggleLoginOverlay()
+                if (config.autofocusInput == "true")
+                    container.focusLoginInput()
             }
         }
         Keys.onPressed: {
-            fader1.state = "on";
-            if (username_input_box.text == "")
-                username_input_box.focus = true
-            else
-                password_input_box.focus = true
+            container.showLoginOverlay()
         }
     }
-    WallpaperFader {
-        id: fader1
+    Theme.LoginOverlayFader {
+        id: loginOverlayFader
+        z: 0
         visible: true
         anchors.fill: parent
         state: "off"
-        source: video1
-        mainStack: login_container
-        footer: login_container
+        content: login_container
     }
 
-    // Set Background Video2
+    // Secondary background video slot, used for crossfades
     MediaPlayer {
-        id: mediaplayer2
-        autoPlay: true; muted: true
-        playlist: Playlist {
-            id: playlist2; playbackMode: Playlist.Random
-        }
+        id: secondaryPlayer
+        autoPlay: true
+        audioOutput: secondaryAudio
+        videoOutput: secondaryVideo
+    }
+    AudioOutput {
+        id: secondaryAudio
+        muted: container.videoAudioMuted
     }
 
     VideoOutput {
-        id: video2
+        id: secondaryVideo
         fillMode: VideoOutput.PreserveAspectCrop
-        anchors.fill: parent; source: mediaplayer2
+        anchors.fill: parent
         opacity: 0
         MouseArea {
-            id: mouseArea2
+            id: secondaryVideoMouseArea
             enabled: false
             anchors.fill: parent;
             onPressed: {
-                fader1.state = fader1.state == "off" ? "on" : "off" ;
-                if (config.autofocusInput == "true") {
-                    if (username_input_box.text == "")
-                        username_input_box.focus = true
-                    else
-                        password_input_box.focus = true
-                }
+                container.toggleLoginOverlay()
+                if (config.autofocusInput == "true")
+                    container.focusLoginInput()
             }
         }
         Behavior on opacity {
-            enabled: true
-            NumberAnimation { easing.type: Easing.InOutQuad; duration: 3000 }
+            NumberAnimation { easing.type: Easing.InOutSine; duration: 2600 }
         }
         Keys.onPressed: {
-            fader2.state = "on";
-            if (username_input_box.text == "")
-                username_input_box.focus = true
-            else
-                password_input_box.focus = true
+            container.showLoginOverlay()
         }
     }
 
-    WallpaperFader {
-        id: fader2
-        visible: true
-        anchors.fill: parent
-        state: "off"
-        source: video2
-        mainStack: login_container
-        footer: login_container
+    property MediaPlayer activePlayer: primaryPlayer
+    property bool videoAudioMuted: true
+
+    function toggleLoginOverlay() {
+        loginOverlayFader.state = loginOverlayFader.state === "off" ? "on" : "off"
     }
 
-    property MediaPlayer currentPlayer: mediaplayer1
+    function showLoginOverlay() {
+        loginOverlayFader.state = "on"
+        focusLoginInput()
+    }
+
+    function focusLoginInput() {
+        if (username_input_box.text === "")
+            username_input_box.focus = true
+        else
+            password_input_box.focus = true
+    }
+
+    function loadConfigFileSync(filename) {
+        if (!previewMode) {
+            return false
+        }
+
+        var url = Qt.resolvedUrl(filename)
+        var xhr = new XMLHttpRequest()
+        try {
+            xhr.open('GET', url, false)
+            xhr.send()
+            if (xhr.status === 200 || xhr.status === 0) {
+                var physicalLines = xhr.responseText.split(/\r?\n/)
+                var lines = []
+                var pendingLine = ""
+                for (var physicalIndex = 0; physicalIndex < physicalLines.length; physicalIndex++) {
+                    var physicalLine = physicalLines[physicalIndex].trim()
+                    var continued = physicalLine.length > 0
+                        && physicalLine.charAt(physicalLine.length - 1) === "\\"
+                    if (continued)
+                        physicalLine = physicalLine.substring(0, physicalLine.length - 1)
+                    pendingLine += physicalLine
+                    if (!continued) {
+                        lines.push(pendingLine)
+                        pendingLine = ""
+                    }
+                }
+                if (pendingLine.length > 0)
+                    lines.push(pendingLine)
+                var inGeneral = false
+                for (var i = 0; i < lines.length; i++) {
+                    var l = lines[i].trim()
+                    if (l.length === 0) continue
+                    if (l.charAt(0) === '#') continue
+                    if (l.charAt(0) === '[') {
+                        inGeneral = (l.toLowerCase() === '[general]')
+                        continue
+                    }
+                    if (!inGeneral) continue
+                    var idx = l.indexOf('=')
+                    if (idx === -1) continue
+                    var key = l.substring(0, idx).trim()
+                    var val = l.substring(idx+1).trim()
+                    // remove surrounding quotes if present
+                    if (val.length >= 2 && ((val.charAt(0) === '"' && val.charAt(val.length-1) === '"') || (val.charAt(0) === "'" && val.charAt(val.length-1) === "'"))) {
+                        val = val.substring(1, val.length-1)
+                    }
+                    // type coercion: numbers and booleans
+                    if (!isNaN(Number(val))) {
+                        val = Number(val)
+                    } else if (val === 'true' || val === 'false') {
+                        // keep strings "true"/"false" if other code expects that, but coerce here to boolean
+                        val = (val === 'true')
+                    }
+                    // Only overwrite when current value is undefined or still the original default.
+                    if (config[key] === undefined || config[key] === _defaults[key]) {
+                        config[key] = val
+                    }
+                }
+                return true
+            }
+        } catch (e) {
+            // ignore
+        }
+        return false
+    }
 
     // Timer event to handle fade between videos
     Timer {
-        interval: 1000;
+        interval: 600;
         running: true; repeat: true
         onTriggered: {
-            if (currentPlayer.duration != -1 && currentPlayer.position > currentPlayer.duration - 10000) { // pre load the 2nd player
-                if (video2.opacity == 0) { // toogle opacity
-                    mediaplayer2.play()
-                } else
-                    mediaplayer1.play()
-            }
-            if (currentPlayer.duration != -1 && currentPlayer.position > currentPlayer.duration - 3000) { // initiate transition
-                if (video2.opacity == 0) { // toogle opacity
-                    mouseArea1.enabled = false
-                    currentPlayer = mediaplayer2
-                    video2.opacity = 1
-                    triggerTimer.start()
-                    mouseArea2.enabled = true
+            if (activePlayer.duration != -1 && activePlayer.position > activePlayer.duration - 9000) {
+                if (secondaryVideo.opacity == 0) {
+                    secondaryPlayer.play()
                 } else {
-                    mouseArea2.enabled = false
-                    currentPlayer = mediaplayer1
-                    video2.opacity = 0
+                    primaryPlayer.play()
+                }
+            }
+            if (activePlayer.duration != -1 && activePlayer.position > activePlayer.duration - 2400) {
+                if (secondaryVideo.opacity == 0) {
+                    primaryVideoMouseArea.enabled = false
+                    activePlayer = secondaryPlayer
+                    secondaryVideo.opacity = 1
                     triggerTimer.start()
-                    mouseArea1.enabled = true
+                    secondaryVideoMouseArea.enabled = true
+                } else {
+                    secondaryVideoMouseArea.enabled = false
+                    activePlayer = primaryPlayer
+                    secondaryVideo.opacity = 0
+                    triggerTimer.start()
+                    primaryVideoMouseArea.enabled = true
                 }
             }
         }
     }
 
-    Timer { // this timer waits for fade to stop and stops the video
+    Timer {
         id: triggerTimer
-        interval: 4000; running: false; repeat: false
+        interval: 1600; running: false; repeat: false
         onTriggered: {
-            if (video2.opacity == 1)
-                mediaplayer1.stop()
+            if (secondaryVideo.opacity == 1)
+                primaryPlayer.stop()
             else
-                mediaplayer2.stop()
+                secondaryPlayer.stop()
         }
+    }
+
+    function videoUrls(value) {
+        if (value === undefined || value === null || value === "")
+            return []
+
+        var entries = Array.isArray(value)
+            ? value
+            : String(value).replace(/\\n/g, "\n").split(/\r?\n/)
+        var urls = []
+        for (var i = 0; i < entries.length; i++) {
+            var entry = String(entries[i]).trim()
+            if (entry.length > 0)
+                urls.push(Qt.resolvedUrl(entry))
+        }
+        return urls
+    }
+
+    function playRandomVideoList(value) {
+        var items = videoUrls(value)
+        if (items.length === 0) {
+            console.warn("No background videos configured")
+            return
+        }
+
+        primaryPlayer.source = items[Math.floor(Math.random() * items.length)]
+        secondaryPlayer.source = items[Math.floor(Math.random() * items.length)]
+        primaryPlayer.play()
+        secondaryPlayer.play()
     }
 
 
@@ -201,6 +344,7 @@ Rectangle {
     // Clock and Login Area
     Rectangle {
         id: rectangle
+        z: 10
         anchors.fill: parent
         color: "transparent"
 
@@ -240,6 +384,7 @@ Rectangle {
 
         Rectangle {
             id: login_container
+            z: 20
             y: clock.y + clock.height + 30
             width: clock.width
             height: parent.height * 0.08
@@ -284,7 +429,7 @@ Rectangle {
                     borderColor: "transparent"
                     textColor: config.labelFontColor
 
-                    Keys.onPressed: {
+                    Keys.onPressed: function(event) {
                         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
                             sddm.login(username_input_box.text, password_input_box.text, session.index)
                             event.accepted = true
@@ -318,7 +463,7 @@ Rectangle {
                     color: config.labelFontColor
                 }
 
-                PasswordBox {
+                Theme.PasswordBox {
                     id: password_input_box
                     height: parent.height
                     font: textFont.name
@@ -332,7 +477,7 @@ Rectangle {
                     textColor: config.labelFontColor
                     tooltipBG: "#25000000"
                     tooltipFG: "#dc322f"
-                    image: "components/resources/warning_red.png"
+                    // image handled by Theme.PasswordBox; keep default
                     onTextChanged: {
                         if (password_input_box.text == "") {
                             clear_passwd_button.visible = false
@@ -419,6 +564,7 @@ Rectangle {
     // Top Bar
     Rectangle {
         id: actionBar
+        z: 20
         width: parent.width
         height: parent.height * 0.04
         anchors.top: parent.top;
@@ -438,17 +584,30 @@ Rectangle {
                 width: 145
                 height: 20
                 anchors.verticalCenter: parent.verticalCenter
+
                 color: "transparent"
+                menuColor: "transparent"
                 arrowColor: "transparent"
-                textColor: config.actionBarFontColor
+                textColor: "#f3f3f3"
                 borderColor: "transparent"
-                hoverColor: "#5692c4"
+                borderWidth: 0
+
                 font.family: textFont.name
                 font.pixelSize: config.actionBarFontSize
                 font.bold: true
 
+                rowDelegate: Component {
+                    Text {
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        color: session.textColor
+                        font: session.font
+                        text: (parent && parent.modelItem && parent.modelItem.name !== undefined) ? parent.modelItem.name : ""
+                    }
+                }
+
                 model: sessionModel
-                index: sessionModel.lastIndex
+                index: (sessionModel && sessionModel.lastIndex !== undefined) ? sessionModel.lastIndex : 0
 
                 KeyNavigation.backtab: shutdown_button
                 KeyNavigation.tab: password_input_box
@@ -456,45 +615,52 @@ Rectangle {
 
             ComboBox {
                 id: language
-
-                model: keyboard.layouts
-                index: keyboard.currentLayout
+                visible: languageModel.length > 0
+                model: languageModel
+                index: (keyboard && keyboard.currentLayout !== undefined) ? keyboard.currentLayout : 0
                 width: 50
                 height: 20
                 anchors.verticalCenter: parent.verticalCenter
-                color: "transparent"
-                arrowColor: "transparent"
-                //textColor: "white"
-                borderColor: "transparent"
-                hoverColor: "#5692c4"
 
-                onValueChanged: keyboard.currentLayout = id
+                color: "transparent"
+                menuColor: "transparent"
+                arrowColor: "transparent"
+                textColor: "#f3f3f3"
+                borderColor: "transparent"
+                borderWidth: 0
+
+                font.family: textFont.name
+                font.pixelSize: config.actionBarFontSize
+                font.bold: true
+
+                rowDelegate: Component {
+                    Text {
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        color: language.textColor
+                        font: language.font
+                        text: (parent && parent.modelItem && parent.modelItem.name !== undefined) ? parent.modelItem.name : ""
+                    }
+                }
+
+                onValueChanged: {
+                    if (keyboard && index >= 0)
+                        keyboard.currentLayout = index
+                }
 
                 Connections {
                     target: keyboard
 
+                    function onLayoutsChanged() {
+                        rebuildLanguageModel()
+                    }
+
                     function onCurrentLayoutChanged() {
-                        combo.index = keyboard.currentLayout
+                        if (language.index !== keyboard.currentLayout)
+                            language.index = keyboard.currentLayout
                     }
                 }
 
-                rowDelegate: Rectangle {
-                    color: "transparent"
-
-                    Text {
-                        anchors.margins: 4
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-
-                        verticalAlignment: Text.AlignVCenter
-
-                        text: modelItem ? modelItem.modelData.shortName : "zz"
-                        font.family: textFont.name
-                        font.pixelSize: config.actionBarFontSize
-                        font.bold: true
-                        color: config.actionBarFontColor
-                    }
-                }
                 KeyNavigation.backtab: session
                 KeyNavigation.tab: username_input_box
             }
@@ -508,20 +674,32 @@ Rectangle {
             spacing: 10
 
             ImageButton {
+                id: videoAudioButton
+                height: parent.height
+                source: Qt.resolvedUrl(container.videoAudioMuted
+                    ? "components/resources/volume-muted.svg"
+                    : "components/resources/volume-on.svg")
+
+                onClicked: container.videoAudioMuted = !container.videoAudioMuted
+                KeyNavigation.backtab: login_button
+                KeyNavigation.tab: reboot_button
+            }
+
+            ImageButton {
                 id: reboot_button
                 height: parent.height
-                source: "components/resources/reboot.svg"
+                source: Qt.resolvedUrl("components/resources/reboot.svg")
 
                 visible: sddm.canReboot
                 onClicked: sddm.reboot()
-                KeyNavigation.backtab: login_button
+                KeyNavigation.backtab: videoAudioButton
                 KeyNavigation.tab: shutdown_button
             }
 
             ImageButton {
                 id: shutdown_button
                 height: parent.height
-                source: "components/resources/shutdown.svg"
+                source: Qt.resolvedUrl("components/resources/shutdown.svg")
                 visible: sddm.canPowerOff
                 onClicked: sddm.powerOff()
                 KeyNavigation.backtab: reboot_button
@@ -531,48 +709,52 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        // Set Focus
-        /* if (username_input_box.text == "") */
-        /*     username_input_box.focus = true */
-        /* else */
-        /*     password_input_box.focus = true */
+        previewMode = (typeof Qt.application !== 'undefined'
+            && Qt.application.arguments
+            && Qt.application.arguments.indexOf('--test-mode') !== -1)
 
-        video1.focus = true
+        // Only load a local config override in preview mode; in real SDDM runtime the
+        // config is injected by SDDM and should not rely on local XHR access.
+        if (previewMode) {
+            loadConfigFileSync("theme.conf.user")
+        }
+
+        try {
+            console.log("runtime theme config:", JSON.stringify(config))
+        } catch (e) {
+            console.log("runtime theme config: (non-serializable)") 
+        }
+
+        primaryVideo.focus = true
+        rebuildLanguageModel()
 
         // load and randomize playlist
         var time = parseInt(new Date().toLocaleTimeString(Qt.locale(),'h'))
         if ( time >= config.dayTimeStart && time <= config.dayTimeEnd ) {
-            playlist1.load(Qt.resolvedUrl(config.bgVidDay), 'm3u')
-            playlist2.load(Qt.resolvedUrl(config.bgVidDay), 'm3u')
-            //image1.source = config.bgImgDay
+            playRandomVideoList(config.bgVidDay)
+            
             if ( config.bgImgDay !== null ) {
-                //image1.source = config.bgImgDay
                 var fileType = config.bgImgDay.substring(config.bgImgDay.lastIndexOf(".") + 1)
-                //console.log(fileType)
                 if (fileType === "gif") {
-                        animatedGIF1.source = config.bgImgDay
+                    animatedBackground.source = config.bgImgDay
                 } else {
-                        image1.source = config.bgImgDay
+                    backgroundImage.source = config.bgImgDay
                 }
             }
         } else {
-            playlist1.load(Qt.resolvedUrl(config.bgVidNight), 'm3u')
-            playlist2.load(Qt.resolvedUrl(config.bgVidNight), 'm3u')
+            playRandomVideoList(config.bgVidNight)
+
             if ( config.bgImgNight !== null ) {
                 var fileType = config.bgImgNight.substring(config.bgImgNight.lastIndexOf(".") + 1)
-                //console.log(fileType)
                 if (fileType === "gif") {
-                        animatedGIF1.source = config.bgImgNight
+                    animatedBackground.source = config.bgImgNight
                 } else {
-                        image1.source = config.bgImgNight
+                    backgroundImage.source = config.bgImgNight
                 }
             }
         }
 
-        for (var k = 0; k < Math.ceil(Math.random() * 10) ; k++) {
-            playlist1.shuffle()
-            playlist2.shuffle()
-        }
+        // Playlist values are pipe-separated URLs supplied through theme config.
 
         if (config.showLoginButton == "false") {
             login_button.visible = false
