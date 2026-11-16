@@ -56,6 +56,26 @@ Rectangle {
         fillMode: AnimatedImage.PreserveAspectCrop
     }
 
+    // The first video stays hidden until it has actually rendered a frame,
+    // then fades in over the background image (or black, if no image is set).
+    property bool videoReady: false
+    property int fadeInDuration: isNaN(parseInt(config.fadeInDuration)) ? 2000 : parseInt(config.fadeInDuration)
+
+    // QtMultimedia skips to the next playlist item on its own when one fails to
+    // play. If every item is broken (offline, dead URLs, missing codec) that
+    // turns into an endless retry loop, so give up after a bounded number of
+    // consecutive errors and leave the background image showing.
+    property int playbackErrors: 0
+    function handlePlaybackError(player) {
+        playbackErrors++
+        console.log("aerial: playback error (" + playbackErrors + "): " + player.errorString)
+        if (playbackErrors >= Math.max(2 * playlist1.itemCount, 10)) {
+            console.log("aerial: too many playback errors, giving up on video")
+            playlist1.clear()
+            playlist2.clear()
+        }
+    }
+
     // Set Background Video1
     MediaPlayer {
         id: mediaplayer1
@@ -65,12 +85,23 @@ Rectangle {
             playbackMode: Playlist.Random
             onLoaded: { mediaplayer1.play() }
         }
+        onPositionChanged: {
+            if (position > 0) {
+                container.videoReady = true
+                container.playbackErrors = 0
+            }
+        }
+        onError: container.handlePlaybackError(mediaplayer1)
     }
 
     VideoOutput {
         id: video1
         fillMode: VideoOutput.PreserveAspectCrop
         anchors.fill: parent; source: mediaplayer1
+        opacity: container.videoReady ? 1 : 0
+        Behavior on opacity {
+            NumberAnimation { easing.type: Easing.InOutQuad; duration: container.fadeInDuration }
+        }
         MouseArea {
             id: mouseArea1
             anchors.fill: parent;
@@ -98,6 +129,10 @@ Rectangle {
         visible: true
         anchors.fill: parent
         state: "off"
+        opacity: container.videoReady ? 1 : 0
+        Behavior on opacity {
+            NumberAnimation { easing.type: Easing.InOutQuad; duration: container.fadeInDuration }
+        }
         source: video1
         mainStack: login_container
         footer: login_container
@@ -110,6 +145,8 @@ Rectangle {
         playlist: Playlist {
             id: playlist2; playbackMode: Playlist.Random
         }
+        onPositionChanged: if (position > 0) container.playbackErrors = 0
+        onError: container.handlePlaybackError(mediaplayer2)
     }
 
     VideoOutput {
@@ -544,8 +581,7 @@ Rectangle {
         if ( time >= config.dayTimeStart && time <= config.dayTimeEnd ) {
             playlist1.load(Qt.resolvedUrl(config.bgVidDay), 'm3u')
             playlist2.load(Qt.resolvedUrl(config.bgVidDay), 'm3u')
-            //image1.source = config.bgImgDay
-            if ( config.bgImgDay !== null ) {
+            if ( config.bgImgDay && config.bgImgDay !== "none" ) {
                 //image1.source = config.bgImgDay
                 var fileType = config.bgImgDay.substring(config.bgImgDay.lastIndexOf(".") + 1)
                 //console.log(fileType)
@@ -558,7 +594,7 @@ Rectangle {
         } else {
             playlist1.load(Qt.resolvedUrl(config.bgVidNight), 'm3u')
             playlist2.load(Qt.resolvedUrl(config.bgVidNight), 'm3u')
-            if ( config.bgImgNight !== null ) {
+            if ( config.bgImgNight && config.bgImgNight !== "none" ) {
                 var fileType = config.bgImgNight.substring(config.bgImgNight.lastIndexOf(".") + 1)
                 //console.log(fileType)
                 if (fileType === "gif") {
