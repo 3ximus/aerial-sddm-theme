@@ -37,6 +37,17 @@ mv aerial-sddm-theme /usr/share/sddm/themes
 
 The theme can be tested by running `sddm-greeter --test-mode --theme <path-to-this-repository>`
 
+### Playlists
+
+The bundled playlists in `playlists/` point at Apple's aerial videos (1080p H.264 unless noted):
+
+- `day.m3u` / `night.m3u` - default day/night playlists (night is the space footage)
+- `all.m3u` - every video
+- `cities.m3u`, `landscapes.m3u`, `space.m3u`, `underwater.m3u` (also `undersea.m3u`) - by category
+- `4k.m3u` - every video in 4K (HEVC 10-bit; needs a fast connection and a GPU that can decode it)
+
+They're generated from Apple's manifest; run `scripts/update-playlists.py` to refresh them if videos stop loading.
+
 ### Other notes
 
 This theme streams the HD videos so a good internet connection is necessary.
