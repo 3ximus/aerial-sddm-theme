@@ -40,7 +40,8 @@ The theme can be tested by running `sddm-greeter --test-mode --theme <path-to-th
 ### Other notes
 
 This theme streams the HD videos so a good internet connection is necessary.
-If there is no active connection or the video can't be played the background will fallback to the image background.jpg
+If there is no active connection or the video can't be played the background will fallback to the image background.jpg.
+The background image is shown until the first video frame is decoded, then the video fades in over it. If every video in the playlist fails to play, the theme stops retrying and keeps the image.
 
 If you wish to play local videos files just use the following command to generate the playlist-file (playlist_day.m3u or playlist_night.m3u) from a directory containing the videos:
 
@@ -64,7 +65,8 @@ You can change a few settings in this file
 You can change a few settings in this file
 - `dayTimeStart` and `dayTimeEnd` - set your day start/end time
 - `bgImgDay` and `bgImgNight` - default background day/night image, now support GIF animated image
-- `bgVidDay` and `bgImgNight` - video day/night playlists
+- `bgVidDay` and `bgVidNight` - video day/night playlists
+- `fadeInDuration` - milliseconds to fade the first video in over the background image once it starts playing (default 2000, 0 to disable). Set `bgImgDay`/`bgImgNight` to `none` to fade in from black instead
 - `displayFont` - font
 - `clockFontSize`, `dateFontSize`, `labelFontSize`, `errorMsgFontSize` and `actionBarFontSize` - customize font size
 - `clockFontColor`, `labelFontColor` and `actionBarFontColor` - customize font color
