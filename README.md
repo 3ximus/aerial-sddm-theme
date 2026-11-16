@@ -54,11 +54,6 @@ while read -r link; do
 done < playlist_file
 ```
 
-### Changing settings in `Main.qml`
-
-You can change a few settings in this file
-- `font.bold` - set true or false to enable or disable bold font
-
 ### Changing settings in `theme.conf.user`
 
 You can change a few settings in this file
@@ -66,6 +61,7 @@ You can change a few settings in this file
 - `bgImgDay` and `bgImgNight` - default background day/night image, now support GIF animated image
 - `bgVidDay` and `bgImgNight` - video day/night playlists
 - `displayFont` - font
+- `boldFont` - set to false to use regular weight instead of bold
 - `clockFontSize`, `dateFontSize`, `labelFontSize`, `errorMsgFontSize` and `actionBarFontSize` - customize font size
 - `clockFontColor`, `labelFontColor` and `actionBarFontColor` - customize font color
 - `dateFormat` and `timeFormat` - customize [date and time](https://doc.qt.io/qt-5/qml-qtqml-date.html) format

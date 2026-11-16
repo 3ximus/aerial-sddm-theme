@@ -223,7 +223,7 @@ Rectangle {
                 text : Qt.formatTime(clock.dateTime, config.timeFormat || "hh:mm")
                 font.pointSize: config.clockFontSize
                 font.family: textFont.name
-                font.bold: true
+                font.bold: config.boldFont != "false"
             }
 
             Text {
@@ -233,7 +233,7 @@ Rectangle {
                 text : Qt.formatDate(clock.dateTime, config.dateFormat || "dddd, dd MMMM yyyy")
                 font.family: textFont.name
                 font.pointSize: config.dateFontSize
-                font.bold: true
+                font.bold: config.boldFont != "false"
             }
         }
 
@@ -264,7 +264,7 @@ Rectangle {
                     horizontalAlignment: Text.AlignLeft
                     font.family: textFont.name
                     font.pixelSize: config.labelFontSize
-                    font.bold: true
+                    font.bold: config.boldFont != "false"
                     color: config.labelFontColor
                     text: "Username"
                     anchors.verticalCenter: parent.verticalCenter
@@ -313,7 +313,7 @@ Rectangle {
                     anchors.verticalCenter: parent.verticalCenter
                     horizontalAlignment: Text.AlignLeft
                     font.family: textFont.name
-                    font.bold: true
+                    font.bold: config.boldFont != "false"
                     font.pixelSize: config.labelFontSize
                     color: config.labelFontColor
                 }
@@ -405,7 +405,7 @@ Rectangle {
                     height: parent.height
                     font.family: textFont.name
                     font.pixelSize: config.errorMsgFontSize
-                    font.bold: true
+                    font.bold: config.boldFont != "false"
                     //color: "white"
                     anchors.top: password_input_box.bottom
                     anchors.left: password_input_box.left
@@ -445,7 +445,7 @@ Rectangle {
                 hoverColor: "#5692c4"
                 font.family: textFont.name
                 font.pixelSize: config.actionBarFontSize
-                font.bold: true
+                font.bold: config.boldFont != "false"
 
                 model: sessionModel
                 index: sessionModel.lastIndex
@@ -491,7 +491,7 @@ Rectangle {
                         text: modelItem ? modelItem.modelData.shortName : "zz"
                         font.family: textFont.name
                         font.pixelSize: config.actionBarFontSize
-                        font.bold: true
+                        font.bold: config.boldFont != "false"
                         color: config.actionBarFontColor
                     }
                 }
