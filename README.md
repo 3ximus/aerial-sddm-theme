@@ -42,7 +42,29 @@ The theme can be tested by running `sddm-greeter --test-mode --theme <path-to-th
 This theme streams the HD videos so a good internet connection is necessary.
 If there is no active connection or the video can't be played the background will fallback to the image background.jpg
 
-If you wish to play local videos files just use the following command to generate the playlist-file (playlist_day.m3u or playlist_night.m3u) from a directory containing the videos:
+### Local videos
+
+Streaming means the first video takes a while to appear at every boot, and nothing plays if the network isn't up yet. Playing videos from disk avoids both:
+
+```
+sudo mkdir /usr/share/sddm/themes/aerial-sddm-theme/videos
+sudo chown $USER /usr/share/sddm/themes/aerial-sddm-theme/{videos,playlists}
+/usr/share/sddm/themes/aerial-sddm-theme/scripts/download-videos.py 5
+```
+
+then set `bgVidDay=playlists/local.m3u` and `bgVidNight=playlists/local.m3u` in `theme.conf.user`. Run the script again to add more videos (`--help` for options).
+
+Some things to keep in mind:
+
+- **Keep the videos outside your home directory.** The greeter runs as the `sddm` user, which usually can't read `/home/<you>`, so videos there work in `--test-mode` but not at boot.
+- **Prefer H.264.** Apple's HEVC files are 10-bit, which many GPUs (e.g. Intel before Kaby Lake, older NVIDIA) can't decode in hardware. Software decoding takes one or two CPU cores at 1080p and stutters, especially during the first seconds after boot. The download script fetches H.264 by default.
+- **Hardware decoding.** Install your VA-API driver and GStreamer's VA plugin (on Arch: `intel-media-driver` or `libva-mesa-driver`, plus `gst-plugin-va`) and check `vainfo` lists H.264 decoding. On machines with two GPUs the decoder may be registered under a device-specific name (`varenderD129h264dec`) and the software decoder still wins. If so, demote it for the greeter in your SDDM config:
+  ```
+  [General]
+  GreeterEnvironment=GST_PLUGIN_FEATURE_RANK=avdec_h264:SECONDARY
+  ```
+
+You can also build a playlist from your own videos:
 
 `find <path-to-your-directory> -maxdepth 1 -type f > <playlist-file>`
 
