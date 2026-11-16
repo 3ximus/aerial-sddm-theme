@@ -1,4 +1,2 @@
-**/*.qmlc
-
-/playlist_videos/*
-!/playlist_videos/*.md
+videos/
+playlists/local.m3u
